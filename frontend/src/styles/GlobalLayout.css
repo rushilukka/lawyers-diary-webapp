@@ -1,0 +1,21 @@
+/* Responsive Layout Utilities */
+
+.layout-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.full-height-center {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Mobile first padding adjustments */
+@media (max-width: 576px) {
+    .layout-container {
+        padding: 0.5rem;
+    }
+}

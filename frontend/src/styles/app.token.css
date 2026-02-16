@@ -1,0 +1,20 @@
+:root {
+    /* Brown Palette */
+    --bs-brown-primary: #5D4037;
+    --bs-brown-dark: #3E2723;
+    --bs-brown-light: #8D6E63;
+
+    /* Yellow Palette */
+    --bs-yellow-accent: #FFD700;
+    --bs-yellow-light: #FFF9C4;
+
+    /* White/Background Palette */
+    --bs-background-white: #FFFFFF;
+    --bs-background-offwhite: #F5F5F5;
+
+    /* Theme mappings */
+    --bs-primary: var(--bs-brown-primary);
+    --bs-secondary: var(--bs-yellow-accent);
+    --bs-body-bg: var(--bs-background-offwhite);
+    --bs-body-color: var(--bs-brown-dark);
+}
