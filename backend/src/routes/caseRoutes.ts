@@ -43,8 +43,8 @@ const router = express.Router();
  *       required: true
  *       content:
  *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Case'
+  *           schema:
+  *             $ref: '#/components/schemas/CaseInput'
  *     responses:
  *       201:
  *         description: Case created
@@ -93,7 +93,7 @@ router.route('/')
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Case'
+ *             $ref: '#/components/schemas/CaseInput'
  *     responses:
  *       200:
  *         description: Case updated

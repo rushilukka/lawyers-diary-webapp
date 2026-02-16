@@ -10,7 +10,7 @@ const options = {
         },
         servers: [
             {
-                url: 'http://localhost:3000/api',
+                url: 'http://localhost:3000',
                 description: 'Local server',
             },
         ],
@@ -53,6 +53,26 @@ const options = {
                         notes: { type: 'string' },
                         is_deleted: { type: 'boolean' },
                         created_at: { type: 'string', format: 'date-time' }
+                    }
+                },
+                CaseInput: {
+                    type: 'object',
+                    required: ['case_number', 'case_title', 'year', 'contact_person_name', 'contact_person_phone'],
+                    properties: {
+                        case_number: { type: 'string' },
+                        case_title: { type: 'string' },
+                        year: { type: 'integer' },
+                        next_date: { type: 'string', format: 'date' },
+                        reply_pending: { type: 'boolean' },
+                        admit: { type: 'boolean' },
+                        matter_disposed: {
+                            type: 'string',
+                            enum: ['pending', 'win', 'lost', 'not_prejudicial']
+                        },
+                        opinion_given: { type: 'boolean' },
+                        contact_person_name: { type: 'string' },
+                        contact_person_phone: { type: 'string' },
+                        notes: { type: 'string' }
                     }
                 }
             }
