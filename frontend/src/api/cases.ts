@@ -24,4 +24,8 @@ export const casesApi = {
         const response = await client.get<Case[]>('/cases');
         return response.data;
     },
+    createCase: async (caseData: any) => {
+        const response = await client.post('/cases', caseData);
+        return response.data;
+    },
 };

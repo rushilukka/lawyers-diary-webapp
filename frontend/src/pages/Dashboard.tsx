@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Row, Col, Card, Navbar, Button, Table, Spinner, Nav } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Table, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { casesApi, type Case } from '../api/cases';
 
@@ -8,19 +8,8 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    const [user, setUser] = useState<{ name: string } | null>(null);
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            try {
-                setUser(JSON.parse(storedUser));
-            } catch (e) {
-                console.error('Failed to parse user data', e);
-                localStorage.removeItem('user'); // Clear invalid data
-            }
-        }
-
         const fetchCases = async () => {
             try {
                 const data = await casesApi.getAllCases();
@@ -38,33 +27,15 @@ const Dashboard = () => {
         fetchCases();
     }, [navigate]);
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        navigate('/login');
-    };
-
     return (
         <>
-            <Navbar expand="lg" style={{ backgroundColor: 'var(--bs-brown-primary)' }} variant="dark">
-                <Container>
-                    <Navbar.Brand href="#home" style={{ color: 'var(--bs-yellow-accent)' }}>Lawyer's Diary</Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
-                        <Nav>
-                            <Navbar.Text className="me-3 text-white">
-                                Welcome, {user?.name}
-                            </Navbar.Text>
-                            <Button variant="outline-light" size="sm" onClick={handleLogout}>Logout</Button>
-                        </Nav>
-                    </Navbar.Collapse>
-                </Container>
-            </Navbar>
-
             <Container className="mt-4 layout-container">
                 <div className="d-flex justify-content-between align-items-center mb-4">
                     <h2 style={{ color: 'var(--bs-brown-dark)' }}>My Cases</h2>
-                    <Button style={{ backgroundColor: 'var(--bs-yellow-accent)', color: 'black', border: 'none' }}>
+                    <Button
+                        style={{ backgroundColor: 'var(--bs-yellow-accent)', color: 'black', border: 'none' }}
+                        onClick={() => navigate('/add-case')}
+                    >
                         + New Case
                     </Button>
                 </div>

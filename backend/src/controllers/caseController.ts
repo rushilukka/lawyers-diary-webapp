@@ -53,19 +53,83 @@ const createCase = async (req: any, res: Response) => {
             notes,
         } = req.body;
 
+        // --- Server-side validation ---
+        const errors: string[] = [];
+
+        // case_number: required, max 5 digits, digits only
+        if (!case_number) {
+            errors.push('Case number is required.');
+        } else if (!/^\d{1,5}$/.test(case_number)) {
+            errors.push('Case number must be 1-5 digits only.');
+        }
+
+        // case_title: required, max 500 chars
+        if (!case_title) {
+            errors.push('Case title is required.');
+        } else if (case_title.length > 500) {
+            errors.push('Case title must be max 500 characters.');
+        }
+
+        // year: required, integer
+        if (!year || !Number.isInteger(Number(year))) {
+            errors.push('Year is required and must be a valid integer.');
+        }
+
+        // next_date: if provided, must be today or in the future
+        if (next_date) {
+            const selectedDate = new Date(next_date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (isNaN(selectedDate.getTime())) {
+                errors.push('Next date must be a valid date.');
+            } else if (selectedDate < today) {
+                errors.push('Next date must be today or a future date.');
+            }
+        }
+
+        // contact_person_name: required, max 500 chars
+        if (!contact_person_name) {
+            errors.push('Contact person name is required.');
+        } else if (contact_person_name.length > 500) {
+            errors.push('Contact person name must be max 500 characters.');
+        }
+
+        // contact_person_phone: required, exactly 10 digits
+        if (!contact_person_phone) {
+            errors.push('Contact person phone is required.');
+        } else if (!/^\d{10}$/.test(contact_person_phone)) {
+            errors.push('Contact person phone must be exactly 10 digits.');
+        }
+
+        // notes: optional, max 500 chars
+        if (notes && notes.length > 500) {
+            errors.push('Notes must be max 500 characters.');
+        }
+
+        // matter_disposed: must be one of the enum values
+        const validDispositions = ['pending', 'win', 'lost', 'not_prejudicial'];
+        if (matter_disposed && !validDispositions.includes(matter_disposed)) {
+            errors.push('Matter disposed must be one of: pending, win, lost, not_prejudicial.');
+        }
+
+        if (errors.length > 0) {
+            return res.status(400).json({ message: errors.join(' ') });
+        }
+        // --- End validation ---
+
         const caseItem = new Case({
             lawyer_id: req.user._id,
             case_number,
             case_title,
-            year,
-            next_date,
-            reply_pending,
-            admit,
-            matter_disposed,
-            opinion_given,
+            year: Number(year),
+            next_date: next_date ? new Date(next_date) : null,
+            reply_pending: reply_pending ?? false,
+            admit: admit ?? false,
+            matter_disposed: matter_disposed || 'pending',
+            opinion_given: opinion_given ?? null,
             contact_person_name,
             contact_person_phone,
-            notes,
+            notes: notes || null,
         });
 
         const createdCase = await caseItem.save();

@@ -1,42 +1,48 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  padding: 0;
+  text-align: left;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* === Add Case Page === */
+.add-case-container {
+  max-width: 900px;
+  margin: 0 auto;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.add-case-container .form-label {
+  color: var(--bs-brown-dark);
+  font-weight: 500;
+  font-size: 0.9rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.add-case-container .add-case-input {
+  border: 1px solid var(--bs-brown-light);
+  border-radius: 6px;
+  padding: 10px 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.card {
-  padding: 2em;
+.add-case-container .add-case-input:focus {
+  border-color: var(--bs-brown-primary);
+  box-shadow: 0 0 0 2px rgba(93, 64, 55, 0.15);
 }
 
-.read-the-docs {
-  color: #888;
+.add-case-container .form-check-input:checked {
+  background-color: var(--bs-brown-primary);
+  border-color: var(--bs-brown-primary);
+}
+
+.add-case-container .form-check-input:checked[type=radio] {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23fff'/%3e%3c/svg%3e");
+}
+
+.add-case-container .form-check-input {
+  border-color: var(--bs-brown-light);
+  cursor: pointer;
+}
+
+.add-case-container .form-check-label {
+  cursor: pointer;
 }
