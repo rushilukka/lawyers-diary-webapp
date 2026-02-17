@@ -28,4 +28,12 @@ export const casesApi = {
         const response = await client.post('/cases', caseData);
         return response.data;
     },
+    getCaseById: async (id: string): Promise<Case> => {
+        const response = await client.get<Case>(`/cases/${id}`);
+        return response.data;
+    },
+    updateCase: async (id: string, caseData: any) => {
+        const response = await client.put(`/cases/${id}`, caseData);
+        return response.data;
+    },
 };

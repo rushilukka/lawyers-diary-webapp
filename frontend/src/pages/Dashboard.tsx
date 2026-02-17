@@ -83,7 +83,7 @@ const Dashboard = () => {
                                                         </td>
                                                         <td>{new Date(c.next_date).toLocaleDateString()}</td>
                                                         <td>
-                                                            <Button size="sm" variant="outline-primary">View</Button>
+                                                            <Button size="sm" variant="outline-primary" onClick={() => navigate(`/case/${c._id}`)}>View</Button>
                                                         </td>
                                                     </tr>
                                                 ))
@@ -102,7 +102,7 @@ const Dashboard = () => {
                         <Col className="d-md-none">
                             {cases.length > 0 ? (
                                 cases.map((c) => (
-                                    <Card key={c._id} className="mb-3 shadow-sm border-0">
+                                    <Card key={c._id} className="mb-3 shadow-sm border-0" style={{ cursor: 'pointer' }} onClick={() => navigate(`/case/${c._id}`)}>
                                         <Card.Body>
                                             <div className="d-flex justify-content-between align-items-start mb-2">
                                                 <h5 className="card-title fw-bold text-primary mb-0">{c.case_number}</h5>

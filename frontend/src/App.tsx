@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
 import AddCase from './pages/AddCase';
+import ViewCase from './pages/ViewCase';
 import AppNavbar from './components/AppNavbar';
 
 function AppLayout() {
@@ -15,6 +16,7 @@ function AppLayout() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/add-case" element={<AddCase />} />
+        <Route path="/case/:id" element={<ViewCase />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
     </>
