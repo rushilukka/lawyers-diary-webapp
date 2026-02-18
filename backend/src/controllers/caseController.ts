@@ -115,10 +115,10 @@ const createCase = async (req: any, res: Response) => {
         if (errors.length > 0) {
             return res.status(400).json({ message: errors.join(' ') });
         }
-        // Check for duplicate case_number + year
-        const existing = await Case.findOne({ case_number, year: Number(year) });
+        // Check for duplicate case_number
+        const existing = await Case.findOne({ case_number });
         if (existing) {
-            return res.status(400).json({ message: `Case number ${case_number} already exists for year ${year}.` });
+            return res.status(400).json({ message: `Case number ${case_number} already exists.` });
         }
         // --- End validation ---
 

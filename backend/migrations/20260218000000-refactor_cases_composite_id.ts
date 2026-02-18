@@ -89,10 +89,10 @@ export const up = async (db: Db, client: any) => {
     // 3. Indexes
     await db.collection('cases').createIndex({ lawyer_id: 1 });
     await db.collection('cases').createIndex(
-        { case_number: 1, year: 1 },
+        { case_number: 1 },
         { unique: true }
     );
-    console.log('Created compound unique index on { case_number, year }');
+    console.log('Created unique index on { case_number }');
 
     // 4. Re-seed sample cases
     const lawyer = await db.collection('lawyers').findOne({ email: 'rushi@gmail.com' });

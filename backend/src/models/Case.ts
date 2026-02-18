@@ -23,8 +23,8 @@ const caseSchema = new mongoose.Schema({
     created_at: { type: Date, default: Date.now }
 });
 
-// Compound unique index: case_number + year must be unique together
-caseSchema.index({ case_number: 1, year: 1 }, { unique: true });
+// Unique index: case_number must be unique
+caseSchema.index({ case_number: 1 }, { unique: true });
 
 const Case = mongoose.model('Case', caseSchema);
 
