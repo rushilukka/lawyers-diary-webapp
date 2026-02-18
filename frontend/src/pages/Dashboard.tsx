@@ -29,11 +29,12 @@ const Dashboard = () => {
     const [searching, setSearching] = useState(false);
     const searchInputRef = useRef<HTMLInputElement>(null);
 
-    // Date filter state
+    // Date filter state — pre-filter to current month on load
+    const currentMonth = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
     const [dateFilterOpen, setDateFilterOpen] = useState(false);
-    const [dateFilterMode, setDateFilterMode] = useState<DateFilterMode>('exact');
-    const [dateFilterValue, setDateFilterValue] = useState('');
-    const [dateFilterActive, setDateFilterActive] = useState(false);
+    const [dateFilterMode, setDateFilterMode] = useState<DateFilterMode>('month');
+    const [dateFilterValue, setDateFilterValue] = useState(currentMonth);
+    const [dateFilterActive, setDateFilterActive] = useState(true);
     const dateFilterRef = useRef<HTMLDivElement>(null);
 
     // Delete state
@@ -169,9 +170,14 @@ const Dashboard = () => {
         setDeleteTarget(null);
     };
 
-    // Apply both text search and date filter
+    // Apply both text search and date filter, then sort by next_date ascending (upcoming first)
     const baseCases = filteredCases !== null ? filteredCases : cases;
-    const displayCases = dateFilterActive ? baseCases.filter(c => matchesDateFilter(c.next_date)) : baseCases;
+    const dateFiltered = dateFilterActive ? baseCases.filter(c => matchesDateFilter(c.next_date)) : baseCases;
+    const displayCases = [...dateFiltered].sort((a, b) => {
+        const dateA = a.next_date ? new Date(a.next_date).getTime() : Infinity;
+        const dateB = b.next_date ? new Date(b.next_date).getTime() : Infinity;
+        return dateA - dateB;
+    });
 
     return (
         <>
