@@ -15,6 +15,15 @@ const SEARCH_FIELDS = [
 
 type DateFilterMode = 'exact' | 'month' | 'year';
 
+const formatDate = (dateStr: string): string => {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '—';
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yy = String(d.getFullYear()).slice(-2);
+    return `${dd}/${mm}/${yy}`;
+};
+
 const Dashboard = () => {
     const [cases, setCases] = useState<Case[]>([]);
     const [loading, setLoading] = useState(true);
@@ -407,7 +416,9 @@ const Dashboard = () => {
                                                                 {c.matter_disposed === 'pending' ? 'Open' : c.matter_disposed}
                                                             </span>
                                                         </td>
-                                                        <td>{new Date(c.next_date).toLocaleDateString()}</td>
+                                                        <td>
+                                                            <span className="badge bg-warning text-dark fw-bold">{formatDate(c.next_date)}</span>
+                                                        </td>
                                                         <td>
                                                             <div className="d-flex gap-1">
                                                                 <Button size="sm" variant="outline-primary" onClick={() => navigate(`/case/${c._id}`)}>View</Button>
@@ -448,8 +459,8 @@ const Dashboard = () => {
                                             <hr />
                                             <div className="d-flex justify-content-between align-items-center">
                                                 <small className="text-muted">Next Date:</small>
-                                                <span className="fw-bold text-danger">
-                                                    {new Date(c.next_date).toLocaleDateString()}
+                                                <span className="badge bg-warning text-dark fw-bold">
+                                                    {formatDate(c.next_date)}
                                                 </span>
                                             </div>
                                             <div className="mt-2 text-end">
