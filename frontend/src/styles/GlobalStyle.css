@@ -117,3 +117,127 @@ a:hover {
         border-radius: 6px 6px 0 0 !important;
     }
 }
+
+/* === Date Filter Dropdown === */
+.date-filter-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.date-filter-dot {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 8px;
+    height: 8px;
+    background-color: #dc3545;
+    border-radius: 50%;
+    border: 1.5px solid white;
+}
+
+.date-filter-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 1050;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    min-width: 260px;
+    padding: 0;
+    animation: dateFilterSlide 0.2s ease-out;
+}
+
+@keyframes dateFilterSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.date-filter-header {
+    padding: 12px 16px 8px;
+    border-bottom: 1px solid #f0f0f0;
+    color: var(--bs-brown-dark);
+    font-size: 0.9rem;
+}
+
+.date-filter-modes {
+    display: flex;
+    gap: 4px;
+    padding: 10px 16px 6px;
+}
+
+.date-mode-btn {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    background: white;
+    color: var(--bs-brown-dark);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.date-mode-btn:hover {
+    background-color: #f8f0e3;
+    border-color: var(--bs-brown-light);
+}
+
+.date-mode-btn.active {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: white;
+}
+
+.date-filter-input {
+    padding: 8px 16px;
+}
+
+.date-filter-input .form-control {
+    font-size: 0.9rem;
+    border-radius: 6px;
+}
+
+.date-filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 8px 16px 12px;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* Date filter responsive */
+@media (max-width: 576px) {
+    .date-filter-dropdown {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 16px 16px 0 0;
+        min-width: unset;
+        animation: dateFilterSlideUp 0.25s ease-out;
+    }
+
+    @keyframes dateFilterSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(100%);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}

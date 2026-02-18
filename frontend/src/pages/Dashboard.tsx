@@ -13,6 +13,8 @@ const SEARCH_FIELDS = [
     { value: 'matter_disposed', label: 'Status' },
 ];
 
+type DateFilterMode = 'exact' | 'month' | 'year';
+
 const Dashboard = () => {
     const [cases, setCases] = useState<Case[]>([]);
     const [loading, setLoading] = useState(true);
@@ -26,6 +28,13 @@ const Dashboard = () => {
     const [filteredCases, setFilteredCases] = useState<Case[] | null>(null);
     const [searching, setSearching] = useState(false);
     const searchInputRef = useRef<HTMLInputElement>(null);
+
+    // Date filter state
+    const [dateFilterOpen, setDateFilterOpen] = useState(false);
+    const [dateFilterMode, setDateFilterMode] = useState<DateFilterMode>('exact');
+    const [dateFilterValue, setDateFilterValue] = useState('');
+    const [dateFilterActive, setDateFilterActive] = useState(false);
+    const dateFilterRef = useRef<HTMLDivElement>(null);
 
     // Delete state
     const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
@@ -56,6 +65,19 @@ const Dashboard = () => {
         }
     }, [searchOpen]);
 
+    // Close date filter dropdown on outside click
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (dateFilterRef.current && !dateFilterRef.current.contains(e.target as Node)) {
+                setDateFilterOpen(false);
+            }
+        };
+        if (dateFilterOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [dateFilterOpen]);
+
     const handleSearch = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         if (!searchQuery.trim()) return;
@@ -76,6 +98,50 @@ const Dashboard = () => {
         setSearchField('');
         setFilteredCases(null);
         setSearchOpen(false);
+    };
+
+    // Date filter logic
+    const applyDateFilter = () => {
+        if (!dateFilterValue) return;
+        setDateFilterActive(true);
+        setDateFilterOpen(false);
+    };
+
+    const clearDateFilter = () => {
+        setDateFilterValue('');
+        setDateFilterActive(false);
+        setDateFilterOpen(false);
+    };
+
+    const getDateFilterLabel = (): string => {
+        if (!dateFilterValue) return '';
+        if (dateFilterMode === 'exact') return new Date(dateFilterValue).toLocaleDateString();
+        if (dateFilterMode === 'month') {
+            const [y, m] = dateFilterValue.split('-');
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${monthNames[parseInt(m, 10) - 1]} ${y}`;
+        }
+        return dateFilterValue; // year
+    };
+
+    const matchesDateFilter = (nextDate: string): boolean => {
+        if (!dateFilterActive || !dateFilterValue) return true;
+        if (!nextDate) return false;
+        const d = new Date(nextDate);
+        if (isNaN(d.getTime())) return false;
+
+        if (dateFilterMode === 'exact') {
+            const filterDate = new Date(dateFilterValue);
+            return d.getFullYear() === filterDate.getFullYear()
+                && d.getMonth() === filterDate.getMonth()
+                && d.getDate() === filterDate.getDate();
+        }
+        if (dateFilterMode === 'month') {
+            const [y, m] = dateFilterValue.split('-');
+            return d.getFullYear() === parseInt(y, 10) && d.getMonth() === parseInt(m, 10) - 1;
+        }
+        // year
+        return d.getFullYear() === parseInt(dateFilterValue, 10);
     };
 
     const handleDeleteClick = (id: string, title: string) => {
@@ -103,7 +169,9 @@ const Dashboard = () => {
         setDeleteTarget(null);
     };
 
-    const displayCases = filteredCases !== null ? filteredCases : cases;
+    // Apply both text search and date filter
+    const baseCases = filteredCases !== null ? filteredCases : cases;
+    const displayCases = dateFilterActive ? baseCases.filter(c => matchesDateFilter(c.next_date)) : baseCases;
 
     return (
         <>
@@ -170,6 +238,88 @@ const Dashboard = () => {
                             )}
                         </div>
 
+                        {/* Calendar Date Filter */}
+                        <div className="date-filter-wrapper" ref={dateFilterRef}>
+                            <Button
+                                variant={dateFilterActive ? 'primary' : 'outline-secondary'}
+                                className="search-icon-btn"
+                                onClick={() => setDateFilterOpen(!dateFilterOpen)}
+                                title="Filter by Next Date"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z" />
+                                </svg>
+                                {dateFilterActive && (
+                                    <span className="date-filter-dot"></span>
+                                )}
+                            </Button>
+
+                            {dateFilterOpen && (
+                                <div className="date-filter-dropdown">
+                                    <div className="date-filter-header">
+                                        <strong>Filter by Next Date</strong>
+                                    </div>
+
+                                    <div className="date-filter-modes">
+                                        <button
+                                            className={`date-mode-btn ${dateFilterMode === 'exact' ? 'active' : ''}`}
+                                            onClick={() => { setDateFilterMode('exact'); setDateFilterValue(''); }}
+                                        >
+                                            Exact Date
+                                        </button>
+                                        <button
+                                            className={`date-mode-btn ${dateFilterMode === 'month' ? 'active' : ''}`}
+                                            onClick={() => { setDateFilterMode('month'); setDateFilterValue(''); }}
+                                        >
+                                            Month
+                                        </button>
+                                        <button
+                                            className={`date-mode-btn ${dateFilterMode === 'year' ? 'active' : ''}`}
+                                            onClick={() => { setDateFilterMode('year'); setDateFilterValue(''); }}
+                                        >
+                                            Year
+                                        </button>
+                                    </div>
+
+                                    <div className="date-filter-input">
+                                        {dateFilterMode === 'exact' && (
+                                            <Form.Control
+                                                type="date"
+                                                value={dateFilterValue}
+                                                onChange={(e) => setDateFilterValue(e.target.value)}
+                                            />
+                                        )}
+                                        {dateFilterMode === 'month' && (
+                                            <Form.Control
+                                                type="month"
+                                                value={dateFilterValue}
+                                                onChange={(e) => setDateFilterValue(e.target.value)}
+                                            />
+                                        )}
+                                        {dateFilterMode === 'year' && (
+                                            <Form.Control
+                                                type="number"
+                                                placeholder="e.g. 2025"
+                                                min="2000"
+                                                max="2100"
+                                                value={dateFilterValue}
+                                                onChange={(e) => setDateFilterValue(e.target.value)}
+                                            />
+                                        )}
+                                    </div>
+
+                                    <div className="date-filter-actions">
+                                        <Button size="sm" variant="outline-secondary" onClick={clearDateFilter}>
+                                            Clear
+                                        </Button>
+                                        <Button size="sm" variant="primary" onClick={applyDateFilter} disabled={!dateFilterValue}>
+                                            Apply
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
                         {/* Add Case */}
                         <Button
                             style={{ backgroundColor: 'var(--bs-yellow-accent)', color: 'black', border: 'none', whiteSpace: 'nowrap' }}
@@ -180,24 +330,33 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* Active search indicator */}
-                {filteredCases !== null && (
-                    <div className="d-flex align-items-center mb-3 search-results-badge">
-                        <span className="badge bg-primary me-2">
-                            {filteredCases.length} result{filteredCases.length !== 1 ? 's' : ''}
-                        </span>
-                        <small className="text-muted">
-                            Searching for "<strong>{searchQuery}</strong>"
-                            {searchField && <> in <strong>{SEARCH_FIELDS.find(f => f.value === searchField)?.label}</strong></>}
-                        </small>
-                        <Button
-                            variant="link"
-                            size="sm"
-                            className="text-danger ms-2 p-0"
-                            onClick={handleClearSearch}
-                        >
-                            Clear
-                        </Button>
+                {/* Active filter indicators */}
+                {(filteredCases !== null || dateFilterActive) && (
+                    <div className="d-flex flex-wrap align-items-center mb-3 gap-2 search-results-badge">
+                        {filteredCases !== null && (
+                            <div className="d-flex align-items-center">
+                                <span className="badge bg-primary me-2">
+                                    {displayCases.length} result{displayCases.length !== 1 ? 's' : ''}
+                                </span>
+                                <small className="text-muted">
+                                    Searching for "<strong>{searchQuery}</strong>"
+                                    {searchField && <> in <strong>{SEARCH_FIELDS.find(f => f.value === searchField)?.label}</strong></>}
+                                </small>
+                                <Button variant="link" size="sm" className="text-danger ms-2 p-0" onClick={handleClearSearch}>
+                                    Clear
+                                </Button>
+                            </div>
+                        )}
+                        {dateFilterActive && (
+                            <div className="d-flex align-items-center">
+                                <span className="badge bg-warning text-dark me-2">
+                                    📅 {getDateFilterLabel()}
+                                </span>
+                                <Button variant="link" size="sm" className="text-danger p-0" onClick={clearDateFilter}>
+                                    Clear date
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -254,7 +413,7 @@ const Dashboard = () => {
                                             ) : (
                                                 <tr>
                                                     <td colSpan={6} className="text-center py-4">
-                                                        {filteredCases !== null ? 'No matching cases found.' : 'No cases found.'}
+                                                        {(filteredCases !== null || dateFilterActive) ? 'No matching cases found.' : 'No cases found.'}
                                                     </td>
                                                 </tr>
                                             )}
@@ -304,7 +463,7 @@ const Dashboard = () => {
                                 ))
                             ) : (
                                 <div className="text-center py-4">
-                                    {filteredCases !== null ? 'No matching cases found.' : 'No cases found.'}
+                                    {(filteredCases !== null || dateFilterActive) ? 'No matching cases found.' : 'No cases found.'}
                                 </div>
                             )}
                         </Col>
