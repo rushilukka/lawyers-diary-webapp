@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import AddCase from './pages/AddCase';
 import ViewCase from './pages/ViewCase';
 import AppNavbar from './components/AppNavbar';
+import InstallPrompt from './components/InstallPrompt';
 import { authApi } from './api/auth';
 
 function AppLayout() {
@@ -62,6 +63,7 @@ function App() {
   return (
     <Router>
       <AppLayout />
+      <InstallPrompt />
     </Router>
   );
 }

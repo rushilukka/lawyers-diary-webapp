@@ -1,0 +1,94 @@
+.install-prompt-overlay {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    padding: 0 12px 12px;
+    animation: slideUp 0.4s ease-out;
+}
+
+.install-prompt-banner {
+    background: var(--bs-brown-primary, #5D4037);
+    border-radius: 16px;
+    padding: 16px 20px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
+    color: white;
+}
+
+.install-prompt-content {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.install-prompt-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bs-yellow-accent, #FFD700);
+}
+
+.install-prompt-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.install-prompt-text strong {
+    font-size: 1rem;
+    color: white;
+}
+
+.install-prompt-text span {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.install-prompt-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.install-prompt-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.install-prompt-btn:active {
+    opacity: 0.8;
+}
+
+.install-prompt-btn-dismiss {
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.install-prompt-btn-install {
+    background: var(--bs-yellow-accent, #FFD700);
+    color: var(--bs-brown-dark, #3E2723);
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
