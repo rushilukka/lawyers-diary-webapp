@@ -56,11 +56,11 @@ const createCase = async (req: any, res: Response) => {
         // --- Server-side validation ---
         const errors: string[] = [];
 
-        // case_number: required, max 5 digits, digits only
+        // case_number: required, exactly 5 digits
         if (!case_number) {
             errors.push('Case number is required.');
-        } else if (!/^\d{1,5}$/.test(case_number)) {
-            errors.push('Case number must be 1-5 digits only.');
+        } else if (!/^\d{5}$/.test(case_number)) {
+            errors.push('Case number must be exactly 5 digits.');
         }
 
         // case_title: required, max 500 chars
@@ -70,9 +70,9 @@ const createCase = async (req: any, res: Response) => {
             errors.push('Case title must be max 500 characters.');
         }
 
-        // year: required, integer
-        if (!year || !Number.isInteger(Number(year))) {
-            errors.push('Year is required and must be a valid integer.');
+        // year: required, exactly 4 digits
+        if (!year || !/^\d{4}$/.test(String(year))) {
+            errors.push('Year is required and must be exactly 4 digits.');
         }
 
         // next_date: if provided, must be today or in the future
@@ -115,6 +115,11 @@ const createCase = async (req: any, res: Response) => {
         if (errors.length > 0) {
             return res.status(400).json({ message: errors.join(' ') });
         }
+        // Check for duplicate case_number + year
+        const existing = await Case.findOne({ case_number, year: Number(year) });
+        if (existing) {
+            return res.status(400).json({ message: `Case number ${case_number} already exists for year ${year}.` });
+        }
         // --- End validation ---
 
         const caseItem = new Case({
@@ -153,9 +158,12 @@ const updateCase = async (req: any, res: Response) => {
             return res.status(404).json({ message: 'Case not found' });
         }
 
-        // case_number is immutable — reject any attempt to change it
+        // case_number and year are immutable — they form the compound unique key
         if (req.body.case_number !== undefined && req.body.case_number !== caseItem.case_number) {
             return res.status(400).json({ message: 'Case number cannot be changed.' });
+        }
+        if (req.body.year !== undefined && Number(req.body.year) !== caseItem.year) {
+            return res.status(400).json({ message: 'Year cannot be changed.' });
         }
 
         const {

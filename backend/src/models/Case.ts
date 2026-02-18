@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 const caseSchema = new mongoose.Schema({
     _id: { type: String, default: uuidv4 }, // Explicitly set _id to UUID string
     lawyer_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Lawyer', required: true },
-    case_number: { type: String, required: true, maxLength: 10 },
+    case_number: { type: String, required: true, minlength: 5, maxlength: 5, match: /^\d{5}$/ },
     case_title: { type: String, required: true, maxLength: 100 },
     year: { type: Number, required: true },
     next_date: { type: Date, default: null },
@@ -22,6 +22,9 @@ const caseSchema = new mongoose.Schema({
     is_deleted: { type: Boolean, default: false },
     created_at: { type: Date, default: Date.now }
 });
+
+// Compound unique index: case_number + year must be unique together
+caseSchema.index({ case_number: 1, year: 1 }, { unique: true });
 
 const Case = mongoose.model('Case', caseSchema);
 
