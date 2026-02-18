@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Container, Navbar, Button, Nav } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { authApi } from '../api/auth';
 
 const AppNavbar = () => {
     const navigate = useNavigate();
@@ -18,8 +19,12 @@ const AppNavbar = () => {
         }
     }, []);
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
+    const handleLogout = async () => {
+        try {
+            await authApi.logout();
+        } catch {
+            // Even if logout API fails, clear local state
+        }
         localStorage.removeItem('user');
         navigate('/login');
     };

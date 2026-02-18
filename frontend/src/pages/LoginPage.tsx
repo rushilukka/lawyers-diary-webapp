@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { Container, Card, Form, Button, Alert } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
 import { authApi } from '../api/auth';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -16,14 +15,13 @@ const LoginPage = () => {
         setLoading(true);
 
         try {
-            const response = await authApi.login(email, password);
-            localStorage.setItem('token', response.token);
+            const response = await authApi.login(email, password, rememberMe);
             localStorage.setItem('user', JSON.stringify({
-                _id: response._id,
                 name: response.name,
                 email: response.email
             }));
-            navigate('/dashboard');
+            // Full page reload so App.tsx re-runs auth check with new cookies
+            window.location.href = '/dashboard';
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to login');
         } finally {
@@ -55,7 +53,7 @@ const LoginPage = () => {
                                 />
                             </Form.Group>
 
-                            <Form.Group className="mb-4" controlId="formBasicPassword">
+                            <Form.Group className="mb-3" controlId="formBasicPassword">
                                 <Form.Label>Password</Form.Label>
                                 <Form.Control
                                     type="password"
@@ -65,6 +63,16 @@ const LoginPage = () => {
                                     required
                                 />
                             </Form.Group>
+
+                            <div className="d-flex justify-content-between align-items-center mb-4">
+                                <Form.Check
+                                    type="checkbox"
+                                    id="rememberMe"
+                                    label="Remember Me"
+                                    checked={rememberMe}
+                                    onChange={(e) => setRememberMe(e.target.checked)}
+                                />
+                            </div>
 
                             <Button
                                 variant="primary"

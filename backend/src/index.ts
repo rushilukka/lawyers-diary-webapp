@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import connectDB from './config/db';
 
 // Load env vars
@@ -21,6 +22,7 @@ import swaggerSpec from './config/swagger';
 
 // Middleware
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true
