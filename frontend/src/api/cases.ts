@@ -42,4 +42,8 @@ export const casesApi = {
         const response = await client.get<Case[]>('/cases/search', { params });
         return response.data;
     },
+    deleteCase: async (id: string) => {
+        const response = await client.delete(`/cases/${id}`);
+        return response.data;
+    },
 };

@@ -7,7 +7,7 @@ import Case from '../models/Case';
 // @access  Private
 const getCases = async (req: any, res: Response) => {
     try {
-        const cases = await Case.find({ lawyer_id: req.user._id });
+        const cases = await Case.find({ lawyer_id: req.user._id, is_deleted: { $ne: true } });
         res.json(cases);
     } catch (error: any) {
         res.status(500).json({ message: error.message });

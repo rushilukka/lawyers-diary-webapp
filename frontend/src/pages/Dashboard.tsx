@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Container, Row, Col, Card, Button, Table, Spinner, Form, InputGroup } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Table, Spinner, Form, InputGroup, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { casesApi, type Case } from '../api/cases';
 
@@ -26,6 +26,10 @@ const Dashboard = () => {
     const [filteredCases, setFilteredCases] = useState<Case[] | null>(null);
     const [searching, setSearching] = useState(false);
     const searchInputRef = useRef<HTMLInputElement>(null);
+
+    // Delete state
+    const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
+    const [deleting, setDeleting] = useState(false);
 
     useEffect(() => {
         const fetchCases = async () => {
@@ -72,6 +76,31 @@ const Dashboard = () => {
         setSearchField('');
         setFilteredCases(null);
         setSearchOpen(false);
+    };
+
+    const handleDeleteClick = (id: string, title: string) => {
+        setDeleteTarget({ id, title });
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!deleteTarget) return;
+        setDeleting(true);
+        try {
+            await casesApi.deleteCase(deleteTarget.id);
+            setCases((prev) => prev.filter((c) => c._id !== deleteTarget.id));
+            if (filteredCases) {
+                setFilteredCases((prev) => prev ? prev.filter((c) => c._id !== deleteTarget.id) : null);
+            }
+        } catch (err: any) {
+            setError('Failed to delete case. Please try again.');
+        } finally {
+            setDeleting(false);
+            setDeleteTarget(null);
+        }
+    };
+
+    const handleDeleteCancel = () => {
+        setDeleteTarget(null);
     };
 
     const displayCases = filteredCases !== null ? filteredCases : cases;
@@ -215,7 +244,10 @@ const Dashboard = () => {
                                                         </td>
                                                         <td>{new Date(c.next_date).toLocaleDateString()}</td>
                                                         <td>
-                                                            <Button size="sm" variant="outline-primary" onClick={() => navigate(`/case/${c._id}`)}>View</Button>
+                                                            <div className="d-flex gap-1">
+                                                                <Button size="sm" variant="outline-primary" onClick={() => navigate(`/case/${c._id}`)}>View</Button>
+                                                                <Button size="sm" variant="outline-danger" onClick={() => handleDeleteClick(c._id, c.case_title)}>Delete</Button>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 ))
@@ -255,6 +287,18 @@ const Dashboard = () => {
                                                     {new Date(c.next_date).toLocaleDateString()}
                                                 </span>
                                             </div>
+                                            <div className="mt-2 text-end">
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline-danger"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDeleteClick(c._id, c.case_title);
+                                                    }}
+                                                >
+                                                    Delete
+                                                </Button>
+                                            </div>
                                         </Card.Body>
                                     </Card>
                                 ))
@@ -267,6 +311,25 @@ const Dashboard = () => {
                     </Row>
                 )}
             </Container>
+
+            {/* Delete Confirmation Modal */}
+            <Modal show={!!deleteTarget} onHide={handleDeleteCancel} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirm Delete</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Are you sure you want to delete the case{' '}
+                    <strong>"{deleteTarget?.title}"</strong>? This action cannot be undone.
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleDeleteCancel} disabled={deleting}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={handleDeleteConfirm} disabled={deleting}>
+                        {deleting ? <Spinner animation="border" size="sm" /> : 'Delete'}
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     );
 };
