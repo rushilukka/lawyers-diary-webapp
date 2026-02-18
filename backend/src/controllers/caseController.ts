@@ -268,4 +268,60 @@ const deleteCase = async (req: any, res: Response) => {
     }
 };
 
-export { getCases, getCaseById, createCase, updateCase, deleteCase };
+// @desc    Search cases by query with optional field filter
+// @route   GET /api/cases/search?q=...&field=...
+// @access  Private
+const searchCases = async (req: any, res: Response) => {
+    try {
+        const { q, field } = req.query;
+
+        if (!q || typeof q !== 'string' || q.trim().length === 0) {
+            return res.status(400).json({ message: 'Search query (q) is required.' });
+        }
+
+        const escapedQuery = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(escapedQuery, 'i');
+
+        const allowedFields = [
+            'case_number', 'case_title', 'contact_person_name',
+            'contact_person_phone', 'notes', 'year', 'matter_disposed'
+        ];
+
+        const baseFilter: any = { lawyer_id: req.user._id, is_deleted: { $ne: true } };
+
+        let searchFilter: any;
+
+        if (field && typeof field === 'string' && allowedFields.includes(field)) {
+            if (field === 'year') {
+                const parsed = Number(q);
+                if (!isNaN(parsed)) {
+                    searchFilter = { ...baseFilter, year: parsed };
+                } else {
+                    return res.json([]);
+                }
+            } else {
+                searchFilter = { ...baseFilter, [field]: regex };
+            }
+        } else {
+            // Search across all text fields
+            searchFilter = {
+                ...baseFilter,
+                $or: [
+                    { case_number: regex },
+                    { case_title: regex },
+                    { contact_person_name: regex },
+                    { contact_person_phone: regex },
+                    { notes: regex },
+                    { matter_disposed: regex },
+                ],
+            };
+        }
+
+        const cases = await Case.find(searchFilter);
+        res.json(cases);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export { getCases, getCaseById, createCase, updateCase, deleteCase, searchCases };

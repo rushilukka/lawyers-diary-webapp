@@ -5,7 +5,8 @@ import {
     createCase,
     getCaseById,
     updateCase,
-    deleteCase
+    deleteCase,
+    searchCases
 } from '../controllers/caseController';
 
 const router = express.Router();
@@ -54,6 +55,35 @@ const router = express.Router();
 router.route('/')
     .get(protect, getCases)
     .post(protect, createCase);
+
+/**
+ * @swagger
+ * /api/cases/search:
+ *   get:
+ *     summary: Search cases by query with optional field filter
+ *     tags: [Cases]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Search query
+ *       - in: query
+ *         name: field
+ *         schema:
+ *           type: string
+ *           enum: [case_number, case_title, contact_person_name, contact_person_phone, notes, year, matter_disposed]
+ *         description: Optional field to search in
+ *     responses:
+ *       200:
+ *         description: Filtered list of cases
+ *       400:
+ *         description: Missing search query
+ */
+router.get('/search', protect, searchCases);
 
 /**
  * @swagger

@@ -43,3 +43,77 @@ a:hover {
     border-color: #FFC107;
     color: var(--bs-brown-dark);
 }
+
+/* === Search Bar Animation === */
+.search-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.search-icon-btn {
+    border-color: var(--bs-brown-light);
+    color: var(--bs-brown-dark);
+    border-radius: 8px;
+    padding: 6px 10px;
+    transition: all 0.2s ease;
+}
+
+.search-icon-btn:hover {
+    background-color: var(--bs-brown-light);
+    color: white;
+    border-color: var(--bs-brown-light);
+}
+
+.search-bar-form {
+    animation: searchExpand 0.35s ease-out forwards;
+    min-width: 0;
+}
+
+@keyframes searchExpand {
+    from {
+        opacity: 0;
+        max-width: 42px;
+        transform: scaleX(0.3);
+        transform-origin: right center;
+    }
+
+    to {
+        opacity: 1;
+        max-width: 600px;
+        transform: scaleX(1);
+        transform-origin: right center;
+    }
+}
+
+.search-field-select {
+    font-size: 0.85rem;
+    border-color: var(--bs-brown-light) !important;
+}
+
+.search-results-badge {
+    animation: fadeIn 0.25s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive: stack search bar on very small screens */
+@media (max-width: 576px) {
+    .search-bar-form .input-group {
+        flex-wrap: wrap;
+    }
+
+    .search-field-select {
+        max-width: 100% !important;
+        border-radius: 6px 6px 0 0 !important;
+    }
+}

@@ -36,4 +36,10 @@ export const casesApi = {
         const response = await client.put(`/cases/${id}`, caseData);
         return response.data;
     },
+    searchCases: async (query: string, field?: string): Promise<Case[]> => {
+        const params: any = { q: query };
+        if (field) params.field = field;
+        const response = await client.get<Case[]>('/cases/search', { params });
+        return response.data;
+    },
 };
