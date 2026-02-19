@@ -1,8 +1,11 @@
 import axios from 'axios';
 
+// Base URL: VITE_API_URL (backend origin) + /api
+const BASE_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api`;
+
 // Create an Axios instance
 const client = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
+    baseURL: BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -53,7 +56,7 @@ client.interceptors.response.use(
 
             try {
                 await axios.post(
-                    `${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/auth/refresh`,
+                    `${BASE_URL}/auth/refresh`,
                     {},
                     { withCredentials: true }
                 );
