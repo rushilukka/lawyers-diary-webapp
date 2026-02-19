@@ -18,20 +18,22 @@ const generateRefreshToken = (id: string) => {
     });
 };
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const setTokenCookies = (res: Response, accessToken: string, refreshToken: string, rememberMe: boolean) => {
     // Access token cookie — always a session cookie (short-lived JWT handles expiry)
     res.cookie('accessToken', accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        secure: isProduction,
+        sameSite: isProduction ? 'none' : 'lax', // 'none' required for cross-origin (Render)
         maxAge: 15 * 60 * 1000, // 15 minutes
     });
 
     // Refresh token cookie — persistent if rememberMe, session cookie otherwise
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        secure: isProduction,
+        sameSite: isProduction ? 'none' : 'lax',
         path: '/api/auth', // Only sent to auth routes
         ...(rememberMe ? { maxAge: REFRESH_TOKEN_MAX_AGE } : {}),
     });
@@ -40,13 +42,13 @@ const setTokenCookies = (res: Response, accessToken: string, refreshToken: strin
 const clearTokenCookies = (res: Response) => {
     res.clearCookie('accessToken', {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        secure: isProduction,
+        sameSite: isProduction ? 'none' : 'lax',
     });
     res.clearCookie('refreshToken', {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        secure: isProduction,
+        sameSite: isProduction ? 'none' : 'lax',
         path: '/api/auth',
     });
 };
@@ -96,8 +98,8 @@ const refreshAccessToken = async (req: Request, res: Response) => {
 
         res.cookie('accessToken', newAccessToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
             maxAge: 15 * 60 * 1000,
         });
 
