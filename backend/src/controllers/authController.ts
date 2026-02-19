@@ -70,6 +70,8 @@ const authLawyer = async (req: Request, res: Response) => {
         res.json({
             name: lawyer.name,
             email: lawyer.email,
+            accessToken,
+            refreshToken,
         });
     } else {
         res.status(401).json({ message: 'Invalid email or password' });
@@ -80,7 +82,8 @@ const authLawyer = async (req: Request, res: Response) => {
 // @route   POST /api/auth/refresh
 // @access  Public (uses refresh token cookie)
 const refreshAccessToken = async (req: Request, res: Response) => {
-    const refreshToken = req.cookies?.refreshToken;
+    // Accept refresh token from cookie or request body (fallback for incognito)
+    const refreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
 
     if (!refreshToken) {
         return res.status(401).json({ message: 'No refresh token' });
@@ -103,7 +106,7 @@ const refreshAccessToken = async (req: Request, res: Response) => {
             maxAge: 15 * 60 * 1000,
         });
 
-        res.json({ message: 'Token refreshed' });
+        res.json({ message: 'Token refreshed', accessToken: newAccessToken });
     } catch (error) {
         clearTokenCookies(res);
         res.status(401).json({ message: 'Invalid refresh token' });

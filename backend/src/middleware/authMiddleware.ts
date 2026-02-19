@@ -9,16 +9,16 @@ interface AuthRequest extends Request {
 const protect = async (req: AuthRequest, res: Response, next: NextFunction) => {
     let token: string | undefined;
 
-    // 1. Try HTTP-only cookie first
-    if (req.cookies?.accessToken) {
-        token = req.cookies.accessToken;
-    }
-    // 2. Fallback to Authorization header (for Swagger/Postman)
-    else if (
+    // 1. Try Authorization header first (works in incognito / when cookies blocked)
+    if (
         req.headers.authorization &&
         req.headers.authorization.startsWith('Bearer')
     ) {
         token = req.headers.authorization.split(' ')[1];
+    }
+    // 2. Fallback to HTTP-only cookie
+    else if (req.cookies?.accessToken) {
+        token = req.cookies.accessToken;
     }
 
     if (!token) {

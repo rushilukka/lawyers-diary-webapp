@@ -12,6 +12,32 @@ const client = axios.create({
     withCredentials: true, // Send cookies with every request
 });
 
+// --- Token helpers (localStorage fallback for when cookies are blocked) ---
+export const tokenStore = {
+    getAccessToken: () => localStorage.getItem('accessToken'),
+    getRefreshToken: () => localStorage.getItem('refreshToken'),
+    setTokens: (accessToken: string, refreshToken?: string) => {
+        localStorage.setItem('accessToken', accessToken);
+        if (refreshToken) {
+            localStorage.setItem('refreshToken', refreshToken);
+        }
+    },
+    clear: () => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+    },
+};
+
+// Request interceptor — attach Authorization header from localStorage
+client.interceptors.request.use((config) => {
+    const token = tokenStore.getAccessToken();
+    if (token && !config.headers.Authorization) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
 // Flag to prevent multiple simultaneous refresh attempts
 let isRefreshing = false;
 let failedQueue: Array<{
@@ -55,17 +81,25 @@ client.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                await axios.post(
+                // Try refreshing via cookie first, then with stored token in body
+                const refreshToken = tokenStore.getRefreshToken();
+                const refreshRes = await axios.post(
                     `${BASE_URL}/auth/refresh`,
-                    {},
+                    { refreshToken: refreshToken || undefined },
                     { withCredentials: true }
                 );
+
+                // Store the new access token from response body
+                if (refreshRes.data?.accessToken) {
+                    tokenStore.setTokens(refreshRes.data.accessToken);
+                }
+
                 processQueue(null);
                 return client(originalRequest);
             } catch (refreshError) {
                 processQueue(refreshError);
                 // Refresh failed — redirect to login
-                localStorage.removeItem('user');
+                tokenStore.clear();
                 window.location.href = '/login';
                 return Promise.reject(refreshError);
             } finally {
