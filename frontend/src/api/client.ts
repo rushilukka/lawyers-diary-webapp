@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create an Axios instance
 const client = axios.create({
-    baseURL: 'http://localhost:3000/api',
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
     headers: {
         'Content-Type': 'application/json',
     },
@@ -53,7 +53,7 @@ client.interceptors.response.use(
 
             try {
                 await axios.post(
-                    'http://localhost:3000/api/auth/refresh',
+                    `${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/auth/refresh`,
                     {},
                     { withCredentials: true }
                 );

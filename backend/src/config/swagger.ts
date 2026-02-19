@@ -9,10 +9,10 @@ const options = {
             description: 'API documentation for Lawyers Diary Webapp',
         },
         servers: [
-            {
-                url: 'http://localhost:3000',
-                description: 'Local server',
-            },
+            ...(process.env.NODE_ENV === 'production' && process.env.RENDER_EXTERNAL_URL
+                ? [{ url: process.env.RENDER_EXTERNAL_URL, description: 'Production server' }]
+                : [{ url: 'http://localhost:3000', description: 'Local server' }]
+            ),
         ],
         components: {
             securitySchemes: {
