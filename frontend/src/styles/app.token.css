@@ -17,4 +17,5 @@
     --bs-secondary: var(--bs-yellow-accent);
     --bs-body-bg: var(--bs-background-offwhite);
     --bs-body-color: var(--bs-brown-dark);
+    --bs-body-font-family: "Bookman Old Style", Georgia, serif;
 }
