@@ -54,6 +54,7 @@ function AppLayout() {
         <Route path="/add-case" element={isAuthenticated ? <AddCase /> : <Navigate to="/login" replace />} />
         <Route path="/case/:id" element={isAuthenticated ? <ViewCase /> : <Navigate to="/login" replace />} />
         <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} />
+        <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} />
       </Routes>
     </>
   );
