@@ -23,6 +23,15 @@
                 "commands": [
                     "cd backend; npm start"
                 ]
+            },
+            {
+                "name": "meta",
+                "autoExecuteCommands": true,
+                "icon": "folder",
+                "color": "terminal.ansiBlue",
+                "commands": [
+                    "cd meta"
+                ]
             }
         ]
     }

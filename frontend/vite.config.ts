@@ -21,22 +21,25 @@ export default defineConfig({
         scope: '/',
         icons: [
           {
-            src: '/icons/icon-192x192.png',
+            src: '/icons/logo-192x192.png',
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: '/icons/icon-512x512.png',
+            src: '/icons/logo-512x512.png',
             sizes: '512x512',
             type: 'image/png',
           },
           {
-            src: '/icons/icon-512x512.png',
+            src: '/icons/logo-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable',
           },
         ],
+      },
+      devOptions: {
+        enabled: true,
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
