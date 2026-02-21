@@ -346,35 +346,36 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* Active filter indicators */}
+                {/* Active filter indicators — float right */}
                 {(filteredCases !== null || dateFilterActive) && (
-                    <div className="d-flex flex-wrap align-items-center mb-3 gap-2 search-results-badge">
+                    <div className="d-flex flex-wrap align-items-center justify-content-end mb-3 gap-2 search-results-badge">
                         {filteredCases !== null && (
-                            <div className="d-flex align-items-center">
-                                <span className="badge bg-primary me-2">
+                            <div className="d-flex align-items-center gap-1">
+                                <span className="badge bg-primary">
                                     {displayCases.length} result{displayCases.length !== 1 ? 's' : ''}
                                 </span>
                                 <small className="text-muted">
-                                    Searching for "<strong>{searchQuery}</strong>"
-                                    {searchField && <> in <strong>{SEARCH_FIELDS.find(f => f.value === searchField)?.label}</strong></>}
+                                    "{searchQuery}"
+                                    {searchField && <> · <strong>{SEARCH_FIELDS.find(f => f.value === searchField)?.label}</strong></>}
                                 </small>
-                                <Button variant="link" size="sm" className="text-danger ms-2 p-0" onClick={handleClearSearch}>
-                                    Clear
-                                </Button>
+                                <button className="icon-btn" title="Clear search" onClick={handleClearSearch} style={{ width: 22, height: 22 }}>
+                                    <FiX size={12} />
+                                </button>
                             </div>
                         )}
                         {dateFilterActive && (
-                            <div className="d-flex align-items-center">
-                                <span className="badge bg-warning text-dark me-2">
-                                    <FiCalendar size={13} style={{ marginRight: 4 }} />{getDateFilterLabel()}
+                            <div className="d-flex align-items-center gap-1">
+                                <span className="badge bg-warning" style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#fff' }}>
+                                    <FiCalendar size={11} />{getDateFilterLabel()}
                                 </span>
-                                <Button variant="link" size="sm" className="text-danger p-1" onClick={clearDateFilter}>
-                                    Clear date
-                                </Button>
+                                <button className="icon-btn" title="Clear date filter" onClick={clearDateFilter} style={{ width: 22, height: 22 }}>
+                                    <FiX size={12} />
+                                </button>
                             </div>
                         )}
                     </div>
                 )}
+
 
                 {loading ? (
                     <div className="text-center mt-5">

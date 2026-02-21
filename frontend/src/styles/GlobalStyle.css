@@ -34,6 +34,28 @@ body {
     min-height: 100vh;
 }
 
+/* === Remove all focus outlines / rings === */
+*:focus,
+*:focus-visible,
+*:focus-within {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Bootstrap specifically adds box-shadow on .form-control:focus and .btn:focus */
+.form-control:focus,
+.form-select:focus,
+.btn:focus,
+.btn:active:focus,
+.btn-check:focus+.btn,
+.nav-link:focus,
+.navbar-toggler:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+
 a {
     color: var(--bs-yellow-accent);
     text-decoration: none;
