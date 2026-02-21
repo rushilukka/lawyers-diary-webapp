@@ -5,3 +5,7 @@
 - background - blackboard 
 - refactor all icons - fontawesome
 - Theme
+- mobile card improve 
+- direct call option beside contack person in mobile
+- the navbar shouldn't move 
+- icon not properly visible

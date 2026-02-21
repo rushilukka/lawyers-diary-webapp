@@ -1,9 +1,11 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import './app.token.css';
 
-/* === Navbar collapse overlay (no layout shift) === */
+/* === Navbar — sticky top, body scrolls beneath === */
 .navbar {
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
 }
 
 /* On mobile (below lg breakpoint), make collapse float over content */
