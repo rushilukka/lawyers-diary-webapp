@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
 import AddCase from './pages/AddCase';
 import ViewCase from './pages/ViewCase';
+import Analytics from './pages/Analytics';
 import AppNavbar from './components/AppNavbar';
 import InstallPrompt from './components/InstallPrompt';
 import { authApi } from './api/auth';
@@ -51,6 +52,7 @@ function AppLayout() {
       <Routes>
         <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
         <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" replace />} />
+        <Route path="/analytics" element={isAuthenticated ? <Analytics /> : <Navigate to="/login" replace />} />
         <Route path="/add-case" element={isAuthenticated ? <AddCase /> : <Navigate to="/login" replace />} />
         <Route path="/case/:id" element={isAuthenticated ? <ViewCase /> : <Navigate to="/login" replace />} />
         <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} />

@@ -22,6 +22,138 @@
     }
 }
 
+/* === Navbar Tab Links (MyCases / Analytics) === */
+.navbar-tab-link {
+    color: rgba(255, 255, 255, 0.65) !important;
+    font-size: 0.92rem;
+    font-weight: 600;
+    padding: 6px 14px !important;
+    border-radius: 8px;
+    transition: color 0.15s, background 0.15s;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+}
+
+.navbar-tab-link:hover {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.navbar-tab-link.active {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.14) !important;
+}
+
+/* === User Dropdown Button === */
+.navbar-user-wrapper {
+    position: relative;
+}
+
+.navbar-user-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 8px;
+    color: #ffffff;
+    padding: 6px 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+}
+
+.navbar-user-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.45);
+}
+
+.navbar-user-name {
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* === User Dropdown Menu === */
+.navbar-user-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 1060;
+    background: rgba(15, 15, 15, 0.97);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    min-width: 160px;
+    padding: 6px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+    animation: dropdownFadeIn 0.15s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.navbar-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 9px 12px;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+    text-align: left;
+}
+
+.navbar-dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-dropdown-logout:hover {
+    background: rgba(255, 80, 80, 0.15);
+    color: #ff9999;
+}
+
+/* Mobile: stack user wrapper within hamburger collapse */
+@media (max-width: 991.98px) {
+    .navbar-user-wrapper {
+        width: 100%;
+        margin-top: 4px;
+    }
+
+    .navbar-user-btn {
+        width: 100%;
+        justify-content: flex-start;
+        border-radius: 8px;
+    }
+
+    .navbar-user-dropdown {
+        position: static;
+        width: 100%;
+        margin-top: 4px;
+        box-shadow: none;
+        border-color: rgba(255, 255, 255, 0.1);
+        animation: none;
+    }
+}
+
+
 body {
     font-family: var(--bs-body-font-family);
     font-weight: bold;
