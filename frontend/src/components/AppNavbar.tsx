@@ -74,10 +74,10 @@ const AppNavbar = () => {
             <Container>
                 <Navbar.Brand href="/dashboard" style={{ color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <img
-                        src="/icons/logo-192x192.png"
+                        src="/icons/logo-512x512.png"
                         alt="Diary by Davda logo"
-                        width={32}
-                        height={32}
+                        width={56}
+                        height={56}
                         style={{ objectFit: 'contain', borderRadius: '6px' }}
                     />
                     Diary by Davda
