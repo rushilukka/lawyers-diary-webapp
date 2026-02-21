@@ -43,6 +43,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        globIgnores: ['**/icons/logo_transparent.png', '**/icons/blackboard_bg.png'],
         runtimeCaching: [
           {
             urlPattern: /\/api\/.*/i,
