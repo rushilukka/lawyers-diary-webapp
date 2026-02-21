@@ -146,7 +146,7 @@ const AddCase = () => {
 
     return (
         <Container className="add-case-container py-4">
-            <h2 className="mb-4" style={{ color: 'var(--bs-brown-dark)' }}>Add New Case</h2>
+            <h2 className="mb-4">Add New Case</h2>
 
             {serverError && <Alert variant="danger">{serverError}</Alert>}
 
@@ -342,7 +342,7 @@ const AddCase = () => {
                 <Button
                     type="submit"
                     className="w-100 mt-2"
-                    style={{ backgroundColor: 'var(--bs-yellow-accent)', color: 'var(--bs-brown-dark)', border: 'none', fontWeight: 600 }}
+                    style={{ background: '#000', border: '1px solid rgba(255,255,255,0.4)', color: '#fff', fontWeight: 500 }}
                     disabled={loading}
                 >
                     {loading ? 'Adding...' : 'Add Case'}

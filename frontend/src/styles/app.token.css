@@ -8,14 +8,16 @@
     --bs-yellow-accent: #FFD700;
     --bs-yellow-light: #FFF9C4;
 
-    /* White/Background Palette */
+    /* Dark Theme */
     --bs-background-white: #FFFFFF;
     --bs-background-offwhite: #F5F5F5;
+    --bs-card-dark: rgba(0, 0, 0, 0.55);
+    --bs-card-border: rgba(255, 255, 255, 0.12);
 
     /* Theme mappings */
     --bs-primary: var(--bs-brown-primary);
     --bs-secondary: var(--bs-yellow-accent);
-    --bs-body-bg: var(--bs-background-offwhite);
-    --bs-body-color: var(--bs-brown-dark);
+    --bs-body-bg: transparent;
+    --bs-body-color: #FFFFFF;
     --bs-body-font-family: "Bookman Old Style", Georgia, serif;
 }

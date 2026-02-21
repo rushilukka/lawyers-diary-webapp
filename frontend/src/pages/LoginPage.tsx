@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Container, Card, Form, Button, Alert, InputGroup } from 'react-bootstrap';
 import { authApi } from '../api/auth';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -31,12 +32,12 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="full-height-center" style={{ backgroundColor: 'var(--bs-primary)' }}>
+        <div className="full-height-center">
             <Container className="d-flex justify-content-center">
-                <Card className="shadow p-4" style={{ width: '100%', maxWidth: '400px', backgroundColor: 'var(--bs-background-white)' }}>
+                <Card className="shadow p-4" style={{ width: '100%', maxWidth: '400px' }}>
                     <Card.Body>
                         <div className="text-center mb-4">
-                            <h2 style={{ color: 'var(--bs-brown-primary)' }}>Lawyer's Diary</h2>
+                            <h2>Diary by Davda</h2>
                             <p className="text-muted">Please sign in to continue</p>
                         </div>
 
@@ -70,7 +71,7 @@ const LoginPage = () => {
                                         tabIndex={-1}
                                         style={{ borderColor: '#ced4da' }}
                                     >
-                                        {showPassword ? '🙈' : '👁️'}
+                                        {showPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
                                     </Button>
                                 </InputGroup>
                             </Form.Group>

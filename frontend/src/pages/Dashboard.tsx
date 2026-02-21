@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Container, Row, Col, Card, Button, Table, Spinner, Form, InputGroup, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { casesApi, type Case } from '../api/cases';
+import { FiEye, FiTrash2, FiX, FiCalendar } from 'react-icons/fi';
 
 const SEARCH_FIELDS = [
     { value: '', label: 'All Fields' },
@@ -192,7 +193,7 @@ const Dashboard = () => {
         <>
             <Container className="mt-4 layout-container">
                 <div className="d-flex justify-content-between align-items-center mb-4">
-                    <h2 style={{ color: 'var(--bs-brown-dark)' }}>My Cases</h2>
+                    <h2>My Cases</h2>
                     <div className="d-flex align-items-center gap-2">
                         {/* Search */}
                         <div className={`search-wrapper ${searchOpen ? 'search-expanded' : ''}`}>
@@ -246,7 +247,7 @@ const Dashboard = () => {
                                             onClick={handleClearSearch}
                                             title="Clear search"
                                         >
-                                            ✕
+                                            <FiX size={14} />
                                         </Button>
                                     </InputGroup>
                                 </Form>
@@ -337,7 +338,7 @@ const Dashboard = () => {
 
                         {/* Add Case */}
                         <Button
-                            style={{ backgroundColor: 'var(--bs-yellow-accent)', color: 'black', border: 'none', whiteSpace: 'nowrap' }}
+                            style={{ background: '#000', border: '1px solid rgba(255,255,255,0.4)', color: '#fff', whiteSpace: 'nowrap' }}
                             onClick={() => navigate('/add-case')}
                         >
                             + New Case
@@ -365,9 +366,9 @@ const Dashboard = () => {
                         {dateFilterActive && (
                             <div className="d-flex align-items-center">
                                 <span className="badge bg-warning text-dark me-2">
-                                    📅 {getDateFilterLabel()}
+                                    <FiCalendar size={13} style={{ marginRight: 4 }} />{getDateFilterLabel()}
                                 </span>
-                                <Button variant="link" size="sm" className="text-danger p-0" onClick={clearDateFilter}>
+                                <Button variant="link" size="sm" className="text-danger p-1" onClick={clearDateFilter}>
                                     Clear date
                                 </Button>
                             </div>
@@ -421,8 +422,20 @@ const Dashboard = () => {
                                                         </td>
                                                         <td>
                                                             <div className="d-flex gap-1">
-                                                                <Button size="sm" variant="outline-primary" onClick={() => navigate(`/case/${c._id}`)}>View</Button>
-                                                                <Button size="sm" variant="outline-danger" onClick={() => handleDeleteClick(c._id, c.case_title)}>Delete</Button>
+                                                                <button
+                                                                    className="icon-btn"
+                                                                    title="View case"
+                                                                    onClick={() => navigate(`/case/${c._id}`)}
+                                                                >
+                                                                    <FiEye size={14} />
+                                                                </button>
+                                                                <button
+                                                                    className="icon-btn icon-btn-danger"
+                                                                    title="Delete case"
+                                                                    onClick={() => handleDeleteClick(c._id, c.case_title)}
+                                                                >
+                                                                    <FiTrash2 size={14} />
+                                                                </button>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -464,16 +477,16 @@ const Dashboard = () => {
                                                 </span>
                                             </div>
                                             <div className="mt-2 text-end">
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline-danger"
+                                                <button
+                                                    className="icon-btn icon-btn-danger"
+                                                    title="Delete case"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         handleDeleteClick(c._id, c.case_title);
                                                     }}
                                                 >
-                                                    Delete
-                                                </Button>
+                                                    <FiTrash2 size={14} />
+                                                </button>
                                             </div>
                                         </Card.Body>
                                     </Card>

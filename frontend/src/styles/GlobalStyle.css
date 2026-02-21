@@ -23,7 +23,11 @@
 body {
     font-family: var(--bs-body-font-family);
     font-weight: bold;
-    background-color: var(--bs-body-bg);
+    background-image: url('/icons/blackboard_bg.png');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     color: var(--bs-body-color);
     margin: 0;
     padding: 0;
@@ -31,37 +35,253 @@ body {
 }
 
 a {
-    color: var(--bs-primary);
+    color: var(--bs-yellow-accent);
     text-decoration: none;
 }
 
 a:hover {
+    color: #fff;
     text-decoration: underline;
 }
 
-/* Custom button styles to override bootstrap defaults if needed */
-.btn-primary {
-    background-color: var(--bs-primary);
-    border-color: var(--bs-primary);
+/* =========================================
+   DARK THEME — all Bootstrap component overrides
+   for the blackboard background
+   ========================================= */
+
+/* Text overrides */
+.text-muted {
+    color: rgba(255, 255, 255, 0.6) !important;
 }
 
-.btn-primary:hover {
-    background-color: var(--bs-brown-dark);
-    border-color: var(--bs-brown-dark);
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.card-title,
+.card-subtitle {
+    color: #ffffff !important;
 }
 
-.btn-secondary {
-    background-color: var(--bs-secondary);
-    border-color: var(--bs-secondary);
-    color: var(--bs-brown-dark);
-    /* Ensure contrast on yellow */
+/* Cards — dark glass */
+.card {
+    background-color: var(--bs-card-dark) !important;
+    border: 1px solid var(--bs-card-border) !important;
+    color: #ffffff !important;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
 
-.btn-secondary:hover {
-    background-color: #FFC107;
-    /* slightly darker yellow */
-    border-color: #FFC107;
-    color: var(--bs-brown-dark);
+.card-body,
+.card-header,
+.card-footer {
+    color: #ffffff !important;
+}
+
+/* Tables */
+.table {
+    color: #ffffff !important;
+    --bs-table-bg: transparent;
+    --bs-table-hover-bg: rgba(255, 255, 255, 0.08);
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.04);
+}
+
+.table thead th {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.table td,
+.table th {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+
+/* Forms — dark inputs */
+.form-control,
+.form-select {
+    background-color: rgba(0, 0, 0, 0.45) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    color: #ffffff !important;
+    border-color: var(--bs-yellow-accent) !important;
+    box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25) !important;
+}
+
+.form-label {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.form-text {
+    color: rgba(255, 255, 255, 0.55) !important;
+}
+
+.form-check-label {
+    color: #ffffff !important;
+}
+
+/* Input group addon */
+.input-group-text {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Modals */
+.modal-content {
+    background-color: rgba(15, 15, 15, 0.92) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.modal-header,
+.modal-footer {
+    border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+/* Alerts */
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.25) !important;
+    border-color: rgba(220, 53, 69, 0.5) !important;
+    color: #ff8f9a !important;
+}
+
+/* Outline buttons — pure white outlined */
+.btn-outline-secondary,
+.btn-outline-primary,
+.btn-outline-light,
+.btn-outline-danger {
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    background-color: transparent !important;
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-primary:hover,
+.btn-outline-light:hover,
+.btn-outline-danger:hover {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+    border-color: #ffffff !important;
+    color: #ffffff !important;
+}
+
+/* Icon-only action button (minimal, no bg) */
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 6px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    position: relative;
+}
+
+.icon-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #ffffff;
+}
+
+.icon-btn.icon-btn-danger:hover {
+    background: rgba(255, 80, 80, 0.15);
+    border-color: rgba(255, 120, 120, 0.7);
+    color: #ff9999;
+}
+
+/* Date filter dropdown text */
+.date-filter-dropdown {
+    background: rgba(10, 10, 10, 0.92) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.date-filter-header,
+.date-mode-btn {
+    color: #ffffff !important;
+    background: transparent !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.date-mode-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.date-mode-btn.active {
+    background-color: rgba(255, 255, 255, 0.18) !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
+    color: #ffffff !important;
+}
+
+
+
+/* === All filled buttons — black bg, white text === */
+.btn-primary,
+.btn-secondary,
+.btn-dark,
+.btn {
+    background-color: #000000;
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-dark:hover {
+    background-color: #1a1a1a;
+    border-color: rgba(255, 255, 255, 0.7);
+    color: #ffffff;
+}
+
+.btn-danger {
+    background-color: transparent !important;
+    border-color: rgba(255, 100, 100, 0.5) !important;
+    color: #ff9999 !important;
+}
+
+.btn-danger:hover {
+    background-color: rgba(255, 80, 80, 0.15) !important;
+    border-color: rgba(255, 120, 120, 0.8) !important;
+    color: #ffb3b3 !important;
+}
+
+/* === Badges & Spans — all neutral black/white === */
+.badge {
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+.badge.bg-primary,
+.badge.bg-secondary,
+.badge.bg-success,
+.badge.bg-warning,
+.badge.bg-danger,
+.badge.bg-info {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 /* === Search Bar Animation === */

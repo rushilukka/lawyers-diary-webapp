@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Form, Button, Row, Col, Alert, Spinner } from 'react-bootstrap';
 import { casesApi } from '../api/cases';
 import { useNavigate, useParams } from 'react-router-dom';
+import { FiArrowLeft, FiUnlock } from 'react-icons/fi';
 
 const ViewCase = () => {
     const { id } = useParams<{ id: string }>();
@@ -172,7 +173,7 @@ const ViewCase = () => {
     return (
         <Container className="add-case-container py-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2 style={{ color: 'var(--bs-brown-dark)' }}>
+                <h2>
                     {editMode ? 'Edit Case' : 'Case Details'}
                 </h2>
                 <div className="d-flex gap-2">
@@ -180,16 +181,17 @@ const ViewCase = () => {
                         variant="outline-secondary"
                         size="sm"
                         onClick={() => navigate('/dashboard')}
+                        style={{ display: 'flex', alignItems: 'center', gap: 6 }}
                     >
-                        ← Back
+                        <FiArrowLeft size={15} /> Back
                     </Button>
                     {!editMode && (
                         <Button
                             size="sm"
-                            style={{ backgroundColor: 'var(--bs-yellow-accent)', color: 'var(--bs-brown-dark)', border: 'none', fontWeight: 600 }}
+                            style={{ background: '#000', border: '1px solid rgba(255,255,255,0.4)', color: '#fff', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6 }}
                             onClick={() => setEditMode(true)}
                         >
-                            🔓 Click to Unlock
+                            <FiUnlock size={14} /> Unlock to Edit
                         </Button>
                     )}
                 </div>
@@ -378,7 +380,7 @@ const ViewCase = () => {
                         <Button
                             type="submit"
                             className="flex-grow-1"
-                            style={{ backgroundColor: 'var(--bs-yellow-accent)', color: 'var(--bs-brown-dark)', border: 'none', fontWeight: 600 }}
+                            style={{ background: '#000', border: '1px solid rgba(255,255,255,0.4)', color: '#fff', fontWeight: 500 }}
                             disabled={saving}
                         >
                             {saving ? 'Saving...' : 'Save Changes'}
