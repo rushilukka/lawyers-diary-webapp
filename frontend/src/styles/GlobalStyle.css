@@ -1,6 +1,25 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import './app.token.css';
 
+/* === Navbar collapse overlay (no layout shift) === */
+.navbar {
+    position: relative;
+}
+
+/* On mobile (below lg breakpoint), make collapse float over content */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 1040;
+        background-color: #000000;
+        padding: 0.75rem 1rem;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    }
+}
+
 body {
     font-family: var(--bs-body-font-family);
     font-weight: bold;

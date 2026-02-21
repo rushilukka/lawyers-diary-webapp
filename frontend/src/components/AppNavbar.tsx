@@ -70,9 +70,18 @@ const AppNavbar = () => {
     };
 
     return (
-        <Navbar expand="lg" style={{ backgroundColor: 'var(--bs-brown-primary)' }} variant="dark">
+        <Navbar expand="lg" style={{ backgroundColor: '#000000' }} variant="dark">
             <Container>
-                <Navbar.Brand href="/dashboard" style={{ color: 'var(--bs-yellow-accent)' }}>Lawyer's Diary</Navbar.Brand>
+                <Navbar.Brand href="/dashboard" style={{ color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <img
+                        src="/icons/logo-192x192.png"
+                        alt="Diary by Davda logo"
+                        width={32}
+                        height={32}
+                        style={{ objectFit: 'contain', borderRadius: '6px' }}
+                    />
+                    Diary by Davda
+                </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
                     <Nav className="align-items-center gap-2">

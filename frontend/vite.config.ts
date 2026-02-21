@@ -10,8 +10,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['vite.svg'],
       manifest: {
-        name: "Lawyer's Diary",
-        short_name: 'LawDiary',
+        name: 'Diary by Davda',
+        short_name: 'DavdaDiary',
         description: 'Case management for lawyers',
         theme_color: '#5D4037',
         background_color: '#FFFFFF',
