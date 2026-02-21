@@ -22,8 +22,17 @@ const swagger_1 = __importDefault(require("./config/swagger"));
 // Middleware
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
+const allowedOrigins = [process.env.FRONTEND_URL, 'http://localhost:5173'].filter(Boolean);
 app.use((0, cors_1.default)({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+        // Allow requests with no origin (e.g. mobile apps, curl)
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        }
+        else {
+            callback(new Error(`CORS: origin ${origin} not allowed`));
+        }
+    },
     credentials: true
 }));
 app.use((0, helmet_1.default)());

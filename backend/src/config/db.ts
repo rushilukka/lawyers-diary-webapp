@@ -2,8 +2,11 @@ import mongoose from 'mongoose';
 
 const connectDB = async () => {
     try {
-        const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/lawyers_diary_db');
-        console.log(`MongoDB Connected: ${conn.connection.host}`);
+        const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017';
+        const dbName = process.env.DB_NAME || 'lawyers_diary';
+
+        const conn = await mongoose.connect(uri, { dbName });
+        console.log(`MongoDB Connected: ${conn.connection.host} → DB: ${conn.connection.name}`);
     } catch (error: any) {
         console.error(`Error: ${error.message}`);
         process.exit(1);

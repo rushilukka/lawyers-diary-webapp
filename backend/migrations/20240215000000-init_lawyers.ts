@@ -1,6 +1,4 @@
 import { Db } from 'mongodb';
-import { v4 as uuidv4 } from 'uuid';
-import * as bcrypt from 'bcryptjs';
 
 export const up = async (db: Db, client: any) => {
     // Create collection with schema validation
@@ -67,38 +65,9 @@ export const up = async (db: Db, client: any) => {
 
     // Create unique index for email
     await db.collection('lawyers').createIndex({ email: 1 }, { unique: true });
-
-    // --- Seeder Logic ---
-    const lawyerId = uuidv4();
-    const now = new Date();
-
-    // Hash password (using email as password source based on user example request)
-    const hashedPassword = await bcrypt.hash('rushi@gmail.com', 10);
-
-    const verificationToken = 'dummy-verification-token';
-    const verificationTokenExpiration = new Date();
-    verificationTokenExpiration.setHours(verificationTokenExpiration.getHours() + 6);
-
-    await db.collection('lawyers').insertOne({
-
-        name: 'Rushi N Lukka',
-        email: 'rushi@gmail.com',
-        password: hashedPassword,
-        role: 'admin',
-        isVerifiedEmail: true,
-        verificationToken: verificationToken,
-        verificationTokenExpiration: verificationTokenExpiration,
-        twoFactorSecret: null,
-        isTwoFactorEnabled: false,
-        is2FARemPopUp: true,
-        created_at: now,
-    });
-
-    console.log(`Default lawyer created with ID: ${lawyerId}`);
+    console.log('✅ lawyers collection created with schema validation and unique email index.');
 };
 
 export const down = async (db: Db, client: any) => {
-    // Remove the specific seeded user if we want strict rollback, or just drop collection.
-    // Since up creates the collection, down dropping it is correct.
     await db.collection('lawyers').drop();
 };
