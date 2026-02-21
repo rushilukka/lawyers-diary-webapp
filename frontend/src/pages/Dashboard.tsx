@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Container, Row, Col, Card, Button, Table, Spinner, Form, InputGroup, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { casesApi, type Case } from '../api/cases';
-import { FiEye, FiTrash2, FiX, FiCalendar } from 'react-icons/fi';
+import { FiEye, FiTrash2, FiX, FiCalendar, FiPhone } from 'react-icons/fi';
 
 const SEARCH_FIELDS = [
     { value: '', label: 'All Fields' },
@@ -460,24 +460,48 @@ const Dashboard = () => {
                                 displayCases.map((c) => (
                                     <Card key={c._id} className="mb-3 shadow-sm border-0" style={{ cursor: 'pointer' }} onClick={() => navigate(`/case/${c._id}`)}>
                                         <Card.Body>
-                                            <div className="d-flex justify-content-between align-items-start mb-2">
-                                                <h5 className="card-title fw-bold text-primary mb-0">{c.case_number}</h5>
+                                            {/* Header: Case number/year + status badge */}
+                                            <div className="d-flex justify-content-between align-items-start mb-1">
+                                                <h5 className="card-title fw-bold mb-0">
+                                                    {c.case_number}/{c.year}
+                                                </h5>
                                                 <span className={`badge ${c.matter_disposed === 'pending' ? 'bg-success' : 'bg-secondary'}`}>
                                                     {c.matter_disposed === 'pending' ? 'Open' : c.matter_disposed}
                                                 </span>
                                             </div>
-                                            <h6 className="card-subtitle mb-2 text-muted">{c.case_title}</h6>
-                                            <p className="card-text mb-1">
-                                                <strong>Contact:</strong> {c.contact_person_name} ({c.contact_person_phone})
-                                            </p>
-                                            <hr />
-                                            <div className="d-flex justify-content-between align-items-center">
-                                                <small className="text-muted">Next Date:</small>
-                                                <span className="badge bg-warning text-dark fw-bold">
-                                                    {formatDate(c.next_date)}
-                                                </span>
+
+                                            {/* Case title */}
+                                            <h6 className="card-subtitle mb-3 text-muted">{c.case_title}</h6>
+
+                                            {/* Contact */}
+                                            <div className="mb-2">
+                                                <div className="fw-bold mb-1">{c.contact_person_name}</div>
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <a
+                                                        href={`tel:${c.contact_person_phone}`}
+                                                        className="icon-btn"
+                                                        title={`Call ${c.contact_person_name}`}
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        style={{ textDecoration: 'none', width: 28, height: 28 }}
+                                                    >
+                                                        <FiPhone size={13} />
+                                                    </a>
+                                                    <span className="text-muted" style={{ fontSize: '0.9rem' }}>
+                                                        {c.contact_person_phone}
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <div className="mt-2 text-end">
+
+                                            <hr className="my-2" />
+
+                                            {/* Footer: Next date inline + delete */}
+                                            <div className="d-flex justify-content-between align-items-center">
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <small className="text-muted">Next Date:</small>
+                                                    <span className="badge bg-warning fw-bold" style={{ color: '#fff' }}>
+                                                        {formatDate(c.next_date)}
+                                                    </span>
+                                                </div>
                                                 <button
                                                     className="icon-btn icon-btn-danger"
                                                     title="Delete case"
