@@ -68,34 +68,26 @@ const AddCase = () => {
             errs.case_number = 'Case number must be max 5 digits.';
         }
 
-        // Case title: required, max 500
-        if (!formData.case_title) {
-            errs.case_title = 'Case title is required.';
-        } else if (formData.case_title.length > 500) {
+        // Case title: optional, max 500
+        if (formData.case_title && formData.case_title.length > 500) {
             errs.case_title = 'Case title must be max 500 characters.';
         }
 
-        // Next date: must be >= today
+        // Next date: must be a valid date if provided
         if (formData.next_date) {
             const selected = new Date(formData.next_date);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            if (selected < today) {
-                errs.next_date = 'Next date must be today or a future date.';
+            if (isNaN(selected.getTime())) {
+                errs.next_date = 'Next date must be a valid date.';
             }
         }
 
-        // Contact person name: required, max 500
-        if (!formData.contact_person_name) {
-            errs.contact_person_name = 'Contact person name is required.';
-        } else if (formData.contact_person_name.length > 500) {
+        // Contact person name: optional, max 500
+        if (formData.contact_person_name && formData.contact_person_name.length > 500) {
             errs.contact_person_name = 'Contact person name must be max 500 characters.';
         }
 
-        // Contact person phone: required, exactly 10 digits
-        if (!formData.contact_person_phone) {
-            errs.contact_person_phone = 'Contact person phone is required.';
-        } else if (formData.contact_person_phone.length !== 10) {
+        // Contact person phone: optional, exactly 10 digits if provided
+        if (formData.contact_person_phone && formData.contact_person_phone.length !== 10) {
             errs.contact_person_phone = 'Phone number must be exactly 10 digits.';
         }
 

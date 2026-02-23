@@ -63,10 +63,8 @@ const createCase = async (req: any, res: Response) => {
             errors.push('Case number must be exactly 5 digits.');
         }
 
-        // case_title: required, max 500 chars
-        if (!case_title) {
-            errors.push('Case title is required.');
-        } else if (case_title.length > 500) {
+        // case_title: optional, max 500 chars
+        if (case_title && case_title.length > 500) {
             errors.push('Case title must be max 500 characters.');
         }
 
@@ -75,29 +73,21 @@ const createCase = async (req: any, res: Response) => {
             errors.push('Year is required and must be exactly 4 digits.');
         }
 
-        // next_date: if provided, must be today or in the future
+        // next_date: if provided, must be a valid date
         if (next_date) {
             const selectedDate = new Date(next_date);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
             if (isNaN(selectedDate.getTime())) {
                 errors.push('Next date must be a valid date.');
-            } else if (selectedDate < today) {
-                errors.push('Next date must be today or a future date.');
             }
         }
 
-        // contact_person_name: required, max 500 chars
-        if (!contact_person_name) {
-            errors.push('Contact person name is required.');
-        } else if (contact_person_name.length > 500) {
+        // contact_person_name: optional, max 500 chars
+        if (contact_person_name && contact_person_name.length > 500) {
             errors.push('Contact person name must be max 500 characters.');
         }
 
-        // contact_person_phone: required, exactly 10 digits
-        if (!contact_person_phone) {
-            errors.push('Contact person phone is required.');
-        } else if (!/^\d{10}$/.test(contact_person_phone)) {
+        // contact_person_phone: optional, exactly 10 digits if provided
+        if (contact_person_phone && !/^\d{10}$/.test(contact_person_phone)) {
             errors.push('Contact person phone must be exactly 10 digits.');
         }
 
@@ -182,12 +172,8 @@ const updateCase = async (req: any, res: Response) => {
         // --- Server-side validation ---
         const errors: string[] = [];
 
-        if (case_title !== undefined) {
-            if (!case_title) {
-                errors.push('Case title is required.');
-            } else if (case_title.length > 500) {
-                errors.push('Case title must be max 500 characters.');
-            }
+        if (case_title !== undefined && case_title && case_title.length > 500) {
+            errors.push('Case title must be max 500 characters.');
         }
 
         if (year !== undefined && !Number.isInteger(Number(year))) {
@@ -196,29 +182,17 @@ const updateCase = async (req: any, res: Response) => {
 
         if (next_date) {
             const selectedDate = new Date(next_date);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
             if (isNaN(selectedDate.getTime())) {
                 errors.push('Next date must be a valid date.');
-            } else if (selectedDate < today) {
-                errors.push('Next date must be today or a future date.');
             }
         }
 
-        if (contact_person_name !== undefined) {
-            if (!contact_person_name) {
-                errors.push('Contact person name is required.');
-            } else if (contact_person_name.length > 500) {
-                errors.push('Contact person name must be max 500 characters.');
-            }
+        if (contact_person_name !== undefined && contact_person_name && contact_person_name.length > 500) {
+            errors.push('Contact person name must be max 500 characters.');
         }
 
-        if (contact_person_phone !== undefined) {
-            if (!contact_person_phone) {
-                errors.push('Contact person phone is required.');
-            } else if (!/^\d{10}$/.test(contact_person_phone)) {
-                errors.push('Contact person phone must be exactly 10 digits.');
-            }
+        if (contact_person_phone !== undefined && contact_person_phone && !/^\d{10}$/.test(contact_person_phone)) {
+            errors.push('Contact person phone must be exactly 10 digits.');
         }
 
         if (notes !== undefined && notes && notes.length > 500) {

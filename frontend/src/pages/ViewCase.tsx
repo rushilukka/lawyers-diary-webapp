@@ -9,11 +9,6 @@ const ViewCase = () => {
     const navigate = useNavigate();
     const currentYear = new Date().getFullYear();
 
-    const getTodayString = () => {
-        const today = new Date();
-        return today.toISOString().split('T')[0];
-    };
-
     const [formData, setFormData] = useState({
         case_number: '',
         year: '',
@@ -88,30 +83,15 @@ const ViewCase = () => {
     const validate = (): Record<string, string> => {
         const errs: Record<string, string> = {};
 
-        if (!formData.case_title) {
-            errs.case_title = 'Case title is required.';
-        } else if (formData.case_title.length > 500) {
+        if (formData.case_title && formData.case_title.length > 500) {
             errs.case_title = 'Case title must be max 500 characters.';
         }
 
-        if (formData.next_date) {
-            const selected = new Date(formData.next_date);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            if (selected < today) {
-                errs.next_date = 'Next date must be today or a future date.';
-            }
-        }
-
-        if (!formData.contact_person_name) {
-            errs.contact_person_name = 'Contact person name is required.';
-        } else if (formData.contact_person_name.length > 500) {
+        if (formData.contact_person_name && formData.contact_person_name.length > 500) {
             errs.contact_person_name = 'Contact person name must be max 500 characters.';
         }
 
-        if (!formData.contact_person_phone) {
-            errs.contact_person_phone = 'Contact person phone is required.';
-        } else if (formData.contact_person_phone.length !== 10) {
+        if (formData.contact_person_phone && formData.contact_person_phone.length !== 10) {
             errs.contact_person_phone = 'Phone number must be exactly 10 digits.';
         }
 
@@ -259,7 +239,6 @@ const ViewCase = () => {
                         name="next_date"
                         value={formData.next_date}
                         onChange={handleChange}
-                        min={getTodayString()}
                         disabled={!editMode}
                         isInvalid={!!errors.next_date}
                         className="add-case-input"
