@@ -62,11 +62,11 @@ const AddCase = () => {
     const validate = (): Record<string, string> => {
         const errs: Record<string, string> = {};
 
-        // Case number: required, max 5 digits
+        // Case number: required, 1-5 digits
         if (!formData.case_number) {
             errs.case_number = 'Case number is required.';
         } else if (formData.case_number.length > 5) {
-            errs.case_number = 'Case number must be max 5 digits.';
+            errs.case_number = 'Case number must be 1–5 digits.';
         }
 
         // Case title: optional, max 500
@@ -108,7 +108,7 @@ const AddCase = () => {
 
         try {
             const payload = {
-                case_number: formData.case_number,
+                case_number: formData.case_number.padStart(5, '0'),
                 case_title: formData.case_title,
                 year: parseInt(formData.year),
                 next_date: formData.next_date || null,

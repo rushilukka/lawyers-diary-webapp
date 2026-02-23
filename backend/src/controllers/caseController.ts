@@ -56,11 +56,11 @@ const createCase = async (req: any, res: Response) => {
         // --- Server-side validation ---
         const errors: string[] = [];
 
-        // case_number: required, exactly 5 digits
+        // case_number: required, 1-5 digits (will be zero-padded to 5)
         if (!case_number) {
             errors.push('Case number is required.');
-        } else if (!/^\d{5}$/.test(case_number)) {
-            errors.push('Case number must be exactly 5 digits.');
+        } else if (!/^\d{1,5}$/.test(case_number)) {
+            errors.push('Case number must be 1\u20135 digits.');
         }
 
         // case_title: optional, max 500 chars
@@ -105,16 +105,20 @@ const createCase = async (req: any, res: Response) => {
         if (errors.length > 0) {
             return res.status(400).json({ message: errors.join(' ') });
         }
+
+        // Zero-pad case_number to exactly 5 digits
+        const paddedCaseNumber = case_number.padStart(5, '0');
+
         // Check for duplicate case_number
-        const existing = await Case.findOne({ case_number });
+        const existing = await Case.findOne({ case_number: paddedCaseNumber });
         if (existing) {
-            return res.status(400).json({ message: `Case number ${case_number} already exists.` });
+            return res.status(400).json({ message: `Case number ${paddedCaseNumber} already exists.` });
         }
         // --- End validation ---
 
         const caseItem = new Case({
             lawyer_id: req.user._id,
-            case_number,
+            case_number: paddedCaseNumber,
             case_title,
             year: Number(year),
             next_date: next_date ? new Date(next_date) : null,
@@ -281,15 +285,23 @@ const searchCases = async (req: any, res: Response) => {
                 } else {
                     return res.json([]);
                 }
+            } else if (field === 'case_number') {
+                // Pad if all-digits input (e.g. '42' -> '00042')
+                const paddedQ = /^\d{1,5}$/.test(q.trim())
+                    ? q.trim().padStart(5, '0')
+                    : q.trim();
+                searchFilter = { ...baseFilter, case_number: new RegExp(paddedQ, 'i') };
             } else {
                 searchFilter = { ...baseFilter, [field]: regex };
             }
         } else {
-            // Search across all text fields
+            // Search across all text fields; for case_number also try padded exact match
+            const paddedQ = /^\d{1,5}$/.test(q.trim()) ? q.trim().padStart(5, '0') : null;
             searchFilter = {
                 ...baseFilter,
                 $or: [
                     { case_number: regex },
+                    ...(paddedQ ? [{ case_number: paddedQ }] : []),
                     { case_title: regex },
                     { contact_person_name: regex },
                     { contact_person_phone: regex },

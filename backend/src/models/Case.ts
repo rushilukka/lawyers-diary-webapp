@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 const caseSchema = new mongoose.Schema({
     _id: { type: String, default: uuidv4 }, // Explicitly set _id to UUID string
     lawyer_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Lawyer', required: true },
-    case_number: { type: String, required: true, minlength: 5, maxlength: 5, match: /^\d{5}$/ },
+    case_number: { type: String, required: true, minlength: 5, maxlength: 5 },
     case_title: { type: String, maxLength: 500, default: null },
     year: { type: Number, required: true },
     next_date: { type: Date, default: null },
