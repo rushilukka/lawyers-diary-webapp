@@ -100,7 +100,7 @@ client.interceptors.response.use(
                 processQueue(refreshError);
                 // Refresh failed — redirect to login
                 tokenStore.clear();
-                window.location.href = '/login';
+                window.location.href = '/login?reason=session_expired';
                 return Promise.reject(refreshError);
             } finally {
                 isRefreshing = false;
