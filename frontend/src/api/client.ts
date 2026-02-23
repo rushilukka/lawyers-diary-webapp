@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { emitToast } from '../components/ToastContext';
 
 // Base URL: VITE_API_URL (backend origin) + /api
 const BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
@@ -98,9 +99,10 @@ client.interceptors.response.use(
                 return client(originalRequest);
             } catch (refreshError) {
                 processQueue(refreshError);
-                // Refresh failed — redirect to login
+                // Refresh failed — show toast then redirect to login
                 tokenStore.clear();
-                window.location.href = '/login?reason=session_expired';
+                emitToast('Your session has expired. Please sign in again.', 'warning', 3500);
+                setTimeout(() => { window.location.href = '/login'; }, 1500);
                 return Promise.reject(refreshError);
             } finally {
                 isRefreshing = false;

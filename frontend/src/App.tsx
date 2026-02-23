@@ -9,6 +9,7 @@ import Analytics from './pages/Analytics';
 import AppNavbar from './components/AppNavbar';
 import InstallPrompt from './components/InstallPrompt';
 import { authApi } from './api/auth';
+import { ToastProvider } from './components/ToastContext';
 
 function AppLayout() {
   const location = useLocation();
@@ -65,8 +66,10 @@ function AppLayout() {
 function App() {
   return (
     <Router>
-      <AppLayout />
-      <InstallPrompt />
+      <ToastProvider>
+        <AppLayout />
+        <InstallPrompt />
+      </ToastProvider>
     </Router>
   );
 }

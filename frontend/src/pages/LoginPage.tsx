@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Container, Card, Form, Button, Alert, InputGroup } from 'react-bootstrap';
 import { authApi } from '../api/auth';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
@@ -10,14 +10,6 @@ const LoginPage = () => {
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const [sessionExpired, setSessionExpired] = useState(false);
-
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('reason') === 'session_expired') {
-            setSessionExpired(true);
-        }
-    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -49,11 +41,6 @@ const LoginPage = () => {
                             <p className="text-muted">Please sign in to continue</p>
                         </div>
 
-                        {sessionExpired && (
-                            <Alert variant="warning" onClose={() => setSessionExpired(false)} dismissible>
-                                ⏱ Your session has expired. Please sign in again.
-                            </Alert>
-                        )}
                         {error && <Alert variant="danger">{error}</Alert>}
 
                         <Form onSubmit={handleSubmit}>

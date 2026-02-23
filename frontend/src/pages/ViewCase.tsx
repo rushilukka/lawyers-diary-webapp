@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Form, Button, Row, Col, Alert, Spinner } from 'react-bootstrap';
+import { Container, Form, Button, Row, Col, Spinner } from 'react-bootstrap';
 import { casesApi } from '../api/cases';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FiArrowLeft, FiUnlock } from 'react-icons/fi';
+import { useToast } from '../components/ToastContext';
 
 const ViewCase = () => {
     const { id } = useParams<{ id: string }>();
@@ -22,9 +23,8 @@ const ViewCase = () => {
         notes: ''
     });
 
+    const { addToast } = useToast();
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [serverError, setServerError] = useState<string | null>(null);
-    const [successMsg, setSuccessMsg] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [editMode, setEditMode] = useState(false);
@@ -50,7 +50,7 @@ const ViewCase = () => {
                     notes: data.notes || ''
                 });
             } catch (err: any) {
-                setServerError('Failed to load case details.');
+                addToast('Failed to load case details.', 'danger');
                 if (err.response && err.response.status === 401) {
                     navigate('/login');
                 }
@@ -100,8 +100,6 @@ const ViewCase = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setServerError(null);
-        setSuccessMsg(null);
 
         const validationErrors = validate();
         if (Object.keys(validationErrors).length > 0) {
@@ -125,11 +123,11 @@ const ViewCase = () => {
             };
 
             await casesApi.updateCase(id!, payload);
-            setSuccessMsg('Case updated successfully!');
+            addToast('Case updated successfully!', 'success');
             setEditMode(false);
         } catch (err: any) {
             console.error(err);
-            setServerError(err.response?.data?.message || 'Failed to update case. Please try again.');
+            addToast(err.response?.data?.message || 'Failed to update case. Please try again.', 'danger');
         } finally {
             setSaving(false);
         }
@@ -177,8 +175,7 @@ const ViewCase = () => {
                 </div>
             </div>
 
-            {serverError && <Alert variant="danger">{serverError}</Alert>}
-            {successMsg && <Alert variant="success">{successMsg}</Alert>}
+            {/* no inline alerts — toasts are used */}
 
             <Form onSubmit={handleSubmit} noValidate>
                 {/* Case Number + Year */}

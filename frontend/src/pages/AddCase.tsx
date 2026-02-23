@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Container, Form, Button, Row, Col, Alert } from 'react-bootstrap';
+import { Container, Form, Button, Row, Col } from 'react-bootstrap';
 import { casesApi } from '../api/cases';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../components/ToastContext';
 
 const AddCase = () => {
     const navigate = useNavigate();
@@ -25,8 +26,8 @@ const AddCase = () => {
         notes: ''
     });
 
+    const { addToast } = useToast();
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [serverError, setServerError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -96,7 +97,6 @@ const AddCase = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setServerError(null);
 
         const validationErrors = validate();
         if (Object.keys(validationErrors).length > 0) {
@@ -121,10 +121,11 @@ const AddCase = () => {
             };
 
             await casesApi.createCase(payload);
+            addToast('Case added successfully!', 'success');
             navigate('/dashboard');
         } catch (err: any) {
             console.error(err);
-            setServerError(err.response?.data?.message || 'Failed to add case. Please try again.');
+            addToast(err.response?.data?.message || 'Failed to add case. Please try again.', 'danger');
         } finally {
             setLoading(false);
         }
@@ -139,8 +140,6 @@ const AddCase = () => {
     return (
         <Container className="add-case-container py-4">
             <h2 className="mb-4">Add New Case</h2>
-
-            {serverError && <Alert variant="danger">{serverError}</Alert>}
 
             <Form onSubmit={handleSubmit} noValidate>
                 {/* Case Number + Year */}
