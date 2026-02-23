@@ -199,14 +199,14 @@ const ViewCase = () => {
                             <Form.Select
                                 name="year"
                                 value={formData.year}
-                                onChange={handleChange}
-                                disabled={!editMode}
+                                disabled
                                 className="add-case-input"
                             >
                                 {yearOptions.map(y => (
                                     <option key={y} value={y}>{y}</option>
                                 ))}
                             </Form.Select>
+                            <Form.Text className="text-muted">Year cannot be changed.</Form.Text>
                         </Form.Group>
                     </Col>
                 </Row>
