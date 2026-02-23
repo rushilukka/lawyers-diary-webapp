@@ -9,3 +9,6 @@
 - direct call option beside contack person in mobile
 - the navbar shouldn't move 
 - icon not properly visible
+- case number flexible
+- all required condition
+- Toaster
