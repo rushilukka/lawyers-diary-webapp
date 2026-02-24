@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Form, Button, Row, Col } from 'react-bootstrap';
+import Select, { type SingleValue } from 'react-select';
 import { casesApi } from '../api/cases';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../components/ToastContext';
@@ -131,11 +132,76 @@ const AddCase = () => {
         }
     };
 
-    // Generate year options (current year + 5 years back)
+    // Generate year options (current year to 1900)
     const yearOptions = [];
-    for (let y = currentYear; y >= currentYear - 5; y--) {
+    for (let y = currentYear; y >= 1900; y--) {
         yearOptions.push(y);
     }
+
+    const selectYearOptions = yearOptions.map(y => ({
+        value: y.toString(),
+        label: y.toString()
+    }));
+
+    const selectedYearOption = selectYearOptions.find(opt => opt.value === formData.year);
+
+    const handleYearChange = (newValue: SingleValue<{ value: string; label: string }>) => {
+        if (newValue) {
+            setFormData(prev => ({ ...prev, year: newValue.value }));
+        }
+    };
+
+    const customSelectStyles = {
+        control: (provided: any, state: any) => ({
+            ...provided,
+            backgroundColor: '#00000073',
+            borderColor: state.isFocused ? 'var(--bs-black)' : 'var(--bs-brown-light)',
+            boxShadow: state.isFocused ? '0 0 0 2px rgba(0, 0, 0, 0.15)' : 'none',
+            '&:hover': {
+                borderColor: 'var(--bs-black)',
+            },
+            borderRadius: '6px',
+            minHeight: '45px',
+            color: '#fff',
+        }),
+        menu: (provided: any) => ({
+            ...provided,
+            backgroundColor: '#000000ff',
+            border: '1px solid var(--bs-black)',
+            zIndex: 1000
+        }),
+        option: (provided: any, state: any) => ({
+            ...provided,
+            backgroundColor: state.isSelected ? 'var(--bs-brown-primary)' : state.isFocused ? 'rgba(0, 0, 0, 0.73)' : 'transparent',
+            color: '#fff',
+            cursor: 'pointer',
+            '&:active': {
+                backgroundColor: 'var(--bs-brown-primary)',
+            },
+        }),
+        singleValue: (provided: any) => ({
+            ...provided,
+            color: '#fff',
+        }),
+        input: (provided: any) => ({
+            ...provided,
+            color: '#fff',
+        }),
+        placeholder: (provided: any) => ({
+            ...provided,
+            color: 'rgba(255, 255, 255, 0.5)',
+        }),
+        dropdownIndicator: (provided: any) => ({
+            ...provided,
+            color: 'var(--bs-brown-light)',
+            '&:hover': {
+                color: 'var(--bs-brown-primary)',
+            },
+        }),
+        indicatorSeparator: () => ({
+            display: 'none',
+        }),
+    };
 
     return (
         <Container className="add-case-container py-4">
@@ -165,16 +231,14 @@ const AddCase = () => {
                     <Col md={4}>
                         <Form.Group className="mb-3" controlId="year">
                             <Form.Label>Year</Form.Label>
-                            <Form.Select
-                                name="year"
-                                value={formData.year}
-                                onChange={handleChange}
-                                className="add-case-input"
-                            >
-                                {yearOptions.map(y => (
-                                    <option key={y} value={y}>{y}</option>
-                                ))}
-                            </Form.Select>
+                            <Select
+                                options={selectYearOptions}
+                                value={selectedYearOption}
+                                onChange={handleYearChange}
+                                styles={customSelectStyles}
+                                placeholder="Year"
+                                isSearchable
+                            />
                         </Form.Group>
                     </Col>
                 </Row>
