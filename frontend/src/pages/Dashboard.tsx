@@ -39,11 +39,11 @@ const Dashboard = () => {
     const [searching, setSearching] = useState(false);
     const searchInputRef = useRef<HTMLInputElement>(null);
 
-    // Date filter state — pre-filter to current month on load
-    const currentMonth = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+    // Date filter state — pre-filter to today's date on load
+    const today = new Date().toISOString().split('T')[0];
     const [dateFilterOpen, setDateFilterOpen] = useState(false);
-    const [dateFilterMode, setDateFilterMode] = useState<DateFilterMode>('month');
-    const [dateFilterValue, setDateFilterValue] = useState(currentMonth);
+    const [dateFilterMode, setDateFilterMode] = useState<DateFilterMode>('exact');
+    const [dateFilterValue, setDateFilterValue] = useState(today);
     const [dateFilterActive, setDateFilterActive] = useState(true);
     const dateFilterRef = useRef<HTMLDivElement>(null);
 
