@@ -164,9 +164,9 @@ const Dashboard = () => {
         setDeleting(true);
         try {
             await casesApi.deleteCase(deleteTarget.id);
-            setCases((prev) => prev.filter((c) => c._id !== deleteTarget.id));
+            setCases((prev) => prev.filter((c) => c.id !== deleteTarget.id));
             if (filteredCases) {
-                setFilteredCases((prev) => prev ? prev.filter((c) => c._id !== deleteTarget.id) : null);
+                setFilteredCases((prev) => prev ? prev.filter((c) => c.id !== deleteTarget.id) : null);
             }
         } catch (err: any) {
             setError('Failed to delete case. Please try again.');
@@ -405,7 +405,7 @@ const Dashboard = () => {
                                         <tbody>
                                             {displayCases.length > 0 ? (
                                                 displayCases.map((c) => (
-                                                    <tr key={c._id}>
+                                                    <tr key={c.id}>
                                                         <td className="fw-bold">{c.case_number}</td>
                                                         <td>{c.case_title}</td>
                                                         <td>
@@ -426,14 +426,14 @@ const Dashboard = () => {
                                                                 <button
                                                                     className="icon-btn"
                                                                     title="View case"
-                                                                    onClick={() => navigate(`/case/${c._id}`)}
+                                                                    onClick={() => navigate(`/case/${c.id}`)}
                                                                 >
                                                                     <FiEye size={14} />
                                                                 </button>
                                                                 <button
                                                                     className="icon-btn icon-btn-danger"
                                                                     title="Delete case"
-                                                                    onClick={() => handleDeleteClick(c._id, c.case_title)}
+                                                                    onClick={() => handleDeleteClick(c.id, c.case_title)}
                                                                 >
                                                                     <FiTrash2 size={14} />
                                                                 </button>
@@ -458,7 +458,7 @@ const Dashboard = () => {
                         <Col className="d-md-none">
                             {displayCases.length > 0 ? (
                                 displayCases.map((c) => (
-                                    <Card key={c._id} className="mb-3 shadow-sm border-0" style={{ cursor: 'pointer' }} onClick={() => navigate(`/case/${c._id}`)}>
+                                    <Card key={c.id} className="mb-3 shadow-sm border-0" style={{ cursor: 'pointer' }} onClick={() => navigate(`/case/${c.id}`)}>
                                         <Card.Body>
                                             {/* Header: Case number/year + status badge */}
                                             <div className="d-flex justify-content-between align-items-start mb-1">
@@ -507,7 +507,7 @@ const Dashboard = () => {
                                                     title="Delete case"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        handleDeleteClick(c._id, c.case_title);
+                                                        handleDeleteClick(c.id, c.case_title);
                                                     }}
                                                 >
                                                     <FiTrash2 size={14} />

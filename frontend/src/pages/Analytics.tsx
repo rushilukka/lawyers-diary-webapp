@@ -391,9 +391,10 @@ const CaseListPanel = ({
     return (
         <div className="d-flex flex-column gap-3">
             {cases.map(c => (
-                <Card key={c._id} className="text-white analytics-case-card"
+                <Card key={c.id} className="text-white analytics-case-card"
                     style={{ background: 'rgba(0,0,0,0.38)', border: `1px solid ${accentColor}`, borderRadius: '10px', cursor: 'pointer' }}
-                    onClick={() => navigate(`/case/${c._id}`)}>
+                    onClick={() => navigate(`/case/${c.id}`)}>
+
                     <Card.Body className="py-3 px-3">
                         <div className="d-flex justify-content-between align-items-start gap-2">
                             <div style={{ flex: 1, minWidth: 0 }}>
@@ -420,7 +421,8 @@ const CaseListPanel = ({
                                 </div>
                             </div>
                             <button className="icon-btn" title="View case" style={{ flexShrink: 0 }}
-                                onClick={e => { e.stopPropagation(); navigate(`/case/${c._id}`); }}>
+                                onClick={e => { e.stopPropagation(); navigate(`/case/${c.id}`); }}>
+
                                 <FiEye size={13} />
                             </button>
                         </div>

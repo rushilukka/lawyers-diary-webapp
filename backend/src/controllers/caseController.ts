@@ -1,6 +1,12 @@
 import { Response } from 'express';
 import Case from '../models/Case';
-// import { AuthRequest } from '../middleware/authMiddleware'; // Assuming AuthRequest is exported
+
+// Parse compound key "XXXXX-YYYY" → { case_number, year }
+const parseCompoundKey = (key: string): { case_number: string; year: number } | null => {
+    const match = key.match(/^(\d{5})-(\d{4})$/);
+    if (!match) return null;
+    return { case_number: match[1], year: parseInt(match[2], 10) };
+};
 
 // @desc    Get all cases for logged in lawyer
 // @route   GET /api/cases
@@ -14,13 +20,19 @@ const getCases = async (req: any, res: Response) => {
     }
 };
 
-// @desc    Get single case by ID
-// @route   GET /api/cases/:id
+// @desc    Get single case by compound key (XXXXX-YYYY)
+// @route   GET /api/cases/:key
 // @access  Private
 const getCaseById = async (req: any, res: Response) => {
     try {
+        const parsed = parseCompoundKey(req.params.id);
+        if (!parsed) {
+            return res.status(400).json({ message: 'Invalid case key format. Expected XXXXX-YYYY (e.g. 00042-2024).' });
+        }
+
         const caseItem = await Case.findOne({
-            _id: req.params.id,
+            case_number: parsed.case_number,
+            year: parsed.year,
             lawyer_id: req.user._id
         });
 
@@ -138,13 +150,19 @@ const createCase = async (req: any, res: Response) => {
     }
 };
 
-// @desc    Update a case
-// @route   PUT /api/cases/:id
+// @desc    Update a case by compound key (XXXXX-YYYY)
+// @route   PUT /api/cases/:key
 // @access  Private
 const updateCase = async (req: any, res: Response) => {
     try {
+        const parsed = parseCompoundKey(req.params.id);
+        if (!parsed) {
+            return res.status(400).json({ message: 'Invalid case key format. Expected XXXXX-YYYY (e.g. 00042-2024).' });
+        }
+
         const caseItem = await Case.findOne({
-            _id: req.params.id,
+            case_number: parsed.case_number,
+            year: parsed.year,
             lawyer_id: req.user._id
         });
 
@@ -162,7 +180,7 @@ const updateCase = async (req: any, res: Response) => {
 
         const {
             case_title,
-            year,
+            year: body_year,
             next_date,
             reply_pending,
             admit,
@@ -180,7 +198,7 @@ const updateCase = async (req: any, res: Response) => {
             errors.push('Case title must be max 500 characters.');
         }
 
-        if (year !== undefined && !Number.isInteger(Number(year))) {
+        if (body_year !== undefined && !Number.isInteger(Number(body_year))) {
             errors.push('Year must be a valid integer.');
         }
 
@@ -215,7 +233,7 @@ const updateCase = async (req: any, res: Response) => {
 
         // Apply updates (only fields that were sent)
         if (case_title !== undefined) caseItem.case_title = case_title;
-        if (year !== undefined) caseItem.year = Number(year);
+        if (body_year !== undefined) caseItem.year = Number(body_year);
         if (next_date !== undefined) caseItem.next_date = next_date ? new Date(next_date) : null;
         if (reply_pending !== undefined) caseItem.reply_pending = reply_pending;
         if (admit !== undefined) caseItem.admit = admit;
@@ -232,13 +250,19 @@ const updateCase = async (req: any, res: Response) => {
     }
 };
 
-// @desc    Delete a case (Soft delete)
-// @route   DELETE /api/cases/:id
+// @desc    Delete a case (Soft delete) by compound key (XXXXX-YYYY)
+// @route   DELETE /api/cases/:key
 // @access  Private
 const deleteCase = async (req: any, res: Response) => {
     try {
+        const parsed = parseCompoundKey(req.params.id);
+        if (!parsed) {
+            return res.status(400).json({ message: 'Invalid case key format. Expected XXXXX-YYYY (e.g. 00042-2024).' });
+        }
+
         const caseItem = await Case.findOne({
-            _id: req.params.id,
+            case_number: parsed.case_number,
+            year: parsed.year,
             lawyer_id: req.user._id
         });
 
@@ -277,7 +301,13 @@ const searchCases = async (req: any, res: Response) => {
 
         let searchFilter: any;
 
-        if (field && typeof field === 'string' && allowedFields.includes(field)) {
+        // Detect compound key format: XXXXX-YYYY (e.g. "00042-2024")
+        const compoundMatch = q.trim().match(/^(\d{1,5})-(\d{4})$/);
+        if (compoundMatch) {
+            const caseNum = compoundMatch[1].padStart(5, '0');
+            const yr = parseInt(compoundMatch[2], 10);
+            searchFilter = { ...baseFilter, case_number: caseNum, year: yr };
+        } else if (field && typeof field === 'string' && allowedFields.includes(field)) {
             if (field === 'year') {
                 const parsed = Number(q);
                 if (!isNaN(parsed)) {

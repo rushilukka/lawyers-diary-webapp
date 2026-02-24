@@ -1,10 +1,10 @@
 import client from './client';
 
 export interface Case {
-    _id: string;
+    id: string;          // compound key: XXXXX-YYYY (e.g. "00042-2024")
     case_number: string;
     case_title: string;
-    year: string;
+    year: number;
     next_date: string;
     reply_pending: boolean;
     admit: boolean;
@@ -13,9 +13,6 @@ export interface Case {
     contact_person_name: string;
     contact_person_phone: string;
     notes?: string;
-    description?: string;
-    createdAt: string;
-    updatedAt: string;
 }
 
 export const casesApi = {

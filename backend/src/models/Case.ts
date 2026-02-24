@@ -21,6 +21,17 @@ const caseSchema = new mongoose.Schema({
     notes: { type: String, maxLength: 500, default: null },
     is_deleted: { type: Boolean, default: false },
     created_at: { type: Date, default: Date.now }
+}, {
+    toJSON: {
+        transform(_doc, ret: any) {
+            ret.id = `${ret.case_number}-${ret.year}`;  // compound key: XXXXX-YYYY
+            delete ret._id;
+            delete ret.lawyer_id;
+            delete ret.created_at;
+            delete ret.__v;
+            delete ret.is_deleted;
+        }
+    }
 });
 
 // Unique index: case_number must be unique
