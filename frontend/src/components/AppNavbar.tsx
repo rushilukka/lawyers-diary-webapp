@@ -16,6 +16,7 @@ const AppNavbar = () => {
     const [isInstalled, setIsInstalled] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const [navExpanded, setNavExpanded] = useState(false);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -82,7 +83,7 @@ const AppNavbar = () => {
     };
 
     return (
-        <Navbar expand="lg" style={{ backgroundColor: '#000000' }} variant="dark" className="app-navbar">
+        <Navbar expand="lg" expanded={navExpanded} onToggle={setNavExpanded} style={{ backgroundColor: '#000000' }} variant="dark" className="app-navbar">
             <Container>
                 {/* Brand */}
                 <Navbar.Brand href="/dashboard" style={{ color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -106,6 +107,7 @@ const AppNavbar = () => {
                             as={NavLink}
                             to="/dashboard"
                             className={`navbar-tab-link ${location.pathname === '/dashboard' ? 'active' : ''}`}
+                            onClick={() => setNavExpanded(false)}
                         >
                             MyCases
                         </Nav.Link>
@@ -113,6 +115,7 @@ const AppNavbar = () => {
                             as={NavLink}
                             to="/analytics"
                             className={`navbar-tab-link ${location.pathname === '/analytics' ? 'active' : ''}`}
+                            onClick={() => setNavExpanded(false)}
                         >
                             Analytics
                         </Nav.Link>
