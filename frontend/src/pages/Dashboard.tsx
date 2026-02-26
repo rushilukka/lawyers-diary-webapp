@@ -431,13 +431,11 @@ const Dashboard = () => {
                         {/* Export PDF */}
                         <Button
                             variant="outline-secondary"
-                            className="search-icon-btn d-flex align-items-center gap-1"
+                            className="search-icon-btn"
                             onClick={handleExportPDF}
                             title="Export filtered cases as PDF"
-                            style={{ whiteSpace: 'nowrap', paddingLeft: 10, paddingRight: 10 }}
                         >
-                            <FiDownload size={15} />
-                            <span className="d-none d-sm-inline" style={{ fontSize: '0.85rem' }}>Export</span>
+                            <FiDownload size={18} />
                         </Button>
 
                         {/* Add Case */}
@@ -668,7 +666,7 @@ const Dashboard = () => {
                         animation: 'fadeInUp 0.2s ease',
                     }}
                 >
-                    <FiDownload size={15} style={{ opacity: 0.7 }} />
+                    <FiDownload size={18} style={{ opacity: 0.7 }} />
                     {toastMsg}
                 </div>
             )}
