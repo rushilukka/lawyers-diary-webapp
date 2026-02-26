@@ -19,7 +19,6 @@ const caseSchema = new mongoose.Schema({
     contact_person_name: { type: String, maxLength: 500, default: null },
     contact_person_phone: { type: String, maxLength: 15, default: null },
     notes: { type: String, maxLength: 500, default: null },
-    is_deleted: { type: Boolean, default: false },
     created_at: { type: Date, default: Date.now }
 }, {
     toJSON: {
@@ -29,7 +28,6 @@ const caseSchema = new mongoose.Schema({
             delete ret.lawyer_id;
             delete ret.created_at;
             delete ret.__v;
-            delete ret.is_deleted;
         }
     }
 });

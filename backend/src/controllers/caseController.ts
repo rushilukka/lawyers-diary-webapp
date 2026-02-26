@@ -13,7 +13,7 @@ const parseCompoundKey = (key: string): { case_number: string; year: number } | 
 // @access  Private
 const getCases = async (req: any, res: Response) => {
     try {
-        const cases = await Case.find({ lawyer_id: req.user._id, is_deleted: { $ne: true } });
+        const cases = await Case.find({ lawyer_id: req.user._id });
         res.json(cases);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
@@ -126,7 +126,6 @@ const createCase = async (req: any, res: Response) => {
             lawyer_id: req.user._id,
             case_number: paddedCaseNumber,
             year: Number(year),
-            is_deleted: { $ne: true },
         });
         if (existing) {
             return res.status(400).json({ message: `Case number ${paddedCaseNumber} for year ${year} already exists in your diary.` });
@@ -272,9 +271,8 @@ const deleteCase = async (req: any, res: Response) => {
         });
 
         if (caseItem) {
-            caseItem.is_deleted = true;
-            await caseItem.save();
-            res.json({ message: 'Case removed (soft delete)' });
+            await Case.deleteOne({ _id: caseItem._id });
+            res.json({ message: 'Case deleted.' });
         } else {
             res.status(404).json({ message: 'Case not found' });
         }
@@ -302,7 +300,7 @@ const searchCases = async (req: any, res: Response) => {
             'contact_person_phone', 'notes', 'year', 'matter_disposed'
         ];
 
-        const baseFilter: any = { lawyer_id: req.user._id, is_deleted: { $ne: true } };
+        const baseFilter: any = { lawyer_id: req.user._id };
 
         let searchFilter: any;
 

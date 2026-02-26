@@ -51,7 +51,6 @@ const options = {
                         contact_person_name: { type: 'string' },
                         contact_person_phone: { type: 'string' },
                         notes: { type: 'string' },
-                        is_deleted: { type: 'boolean' },
                         created_at: { type: 'string', format: 'date-time' }
                     }
                 },
