@@ -121,10 +121,15 @@ const createCase = async (req: any, res: Response) => {
         // Zero-pad case_number to exactly 5 digits
         const paddedCaseNumber = case_number.padStart(5, '0');
 
-        // Check for duplicate case_number
-        const existing = await Case.findOne({ case_number: paddedCaseNumber });
+        // Check for duplicate case_number within this lawyer's cases (same case_number + year)
+        const existing = await Case.findOne({
+            lawyer_id: req.user._id,
+            case_number: paddedCaseNumber,
+            year: Number(year),
+            is_deleted: { $ne: true },
+        });
         if (existing) {
-            return res.status(400).json({ message: `Case number ${paddedCaseNumber} already exists.` });
+            return res.status(400).json({ message: `Case number ${paddedCaseNumber} for year ${year} already exists in your diary.` });
         }
         // --- End validation ---
 

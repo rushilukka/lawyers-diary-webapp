@@ -34,8 +34,8 @@ const caseSchema = new mongoose.Schema({
     }
 });
 
-// Unique index: case_number must be unique
-caseSchema.index({ case_number: 1 }, { unique: true });
+// Unique per lawyer: same case_number + year cannot appear twice for the same lawyer
+caseSchema.index({ lawyer_id: 1, case_number: 1, year: 1 }, { unique: true });
 
 const Case = mongoose.model('Case', caseSchema);
 
