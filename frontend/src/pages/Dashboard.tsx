@@ -2,7 +2,9 @@ import { useEffect, useState, useRef } from 'react';
 import { Container, Row, Col, Card, Button, Table, Spinner, Form, InputGroup, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { casesApi, type Case } from '../api/cases';
-import { FiEye, FiTrash2, FiX, FiCalendar, FiPhone } from 'react-icons/fi';
+import { FiEye, FiTrash2, FiX, FiCalendar, FiPhone, FiDownload } from 'react-icons/fi';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const SEARCH_FIELDS = [
     { value: '', label: 'All Fields' },
@@ -50,6 +52,18 @@ const Dashboard = () => {
     // Delete state
     const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
     const [deleting, setDeleting] = useState(false);
+
+    // Toast state
+    const [toastMsg, setToastMsg] = useState('');
+    const [showToast, setShowToast] = useState(false);
+    const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const triggerToast = (msg: string) => {
+        if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+        setToastMsg(msg);
+        setShowToast(true);
+        toastTimerRef.current = setTimeout(() => setShowToast(false), 3000);
+    };
 
     useEffect(() => {
         const fetchCases = async () => {
@@ -178,6 +192,84 @@ const Dashboard = () => {
 
     const handleDeleteCancel = () => {
         setDeleteTarget(null);
+    };
+
+    const handleExportPDF = () => {
+        if (displayCases.length === 0) {
+            triggerToast('No data to export.');
+            return;
+        }
+
+        const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+        const pageW = doc.internal.pageSize.getWidth();
+        const now = new Date();
+        const printedOn = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+        // Header
+        doc.setFillColor(40, 30, 20);
+        doc.rect(0, 0, pageW, 18, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.text("Diary by Davda", 14, 11);
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Generated on: ${printedOn}`, pageW - 14, 11, { align: 'right' });
+
+        // Filter info
+        const filterParts: string[] = [];
+        if (dateFilterActive && dateFilterValue) filterParts.push(`Date : ${getDateFilterLabel()}`);
+        if (filteredCases !== null && searchQuery) filterParts.push(`Search: "${searchQuery}"${searchField ? ` in ${SEARCH_FIELDS.find(f => f.value === searchField)?.label}` : ''}`);
+        filterParts.push(`Total records: ${displayCases.length}`);
+
+        doc.setTextColor(80, 60, 40);
+        doc.setFontSize(8);
+        doc.text(filterParts.join('   |   '), 14, 24);
+
+        // Table
+        autoTable(doc, {
+            startY: 28,
+            head: [['#', 'Case No / Year', 'Case Title', 'Contact Person', 'Phone', 'Next Date', 'Status', 'Reply\nPending', 'Admit', 'Opinion\nGiven', 'Notes']],
+            body: displayCases.map((c, idx) => [
+                idx + 1,
+                `${c.case_number} / ${c.year}`,
+                c.case_title,
+                c.contact_person_name || '—',
+                c.contact_person_phone || '—',
+                c.next_date ? formatDate(c.next_date) : '—',
+                c.matter_disposed === 'pending' ? 'Open' : (c.matter_disposed || '—'),
+                c.reply_pending ? 'Yes' : 'No',
+                c.admit ? 'Yes' : 'No',
+                c.opinion_given ? 'Yes' : 'No',
+                c.notes || '—',
+            ]),
+            styles: { fontSize: 7.5, cellPadding: 2.5, overflow: 'linebreak' },
+            headStyles: { fillColor: [40, 30, 20], textColor: 255, fontStyle: 'bold', halign: 'center' },
+            columnStyles: {
+                0: { cellWidth: 8, halign: 'center' },
+                1: { cellWidth: 22, halign: 'center', fontStyle: 'bold' },
+                2: { cellWidth: 45 },
+                3: { cellWidth: 28 },
+                4: { cellWidth: 24 },
+                5: { cellWidth: 20, halign: 'center' },
+                6: { cellWidth: 16, halign: 'center' },
+                7: { cellWidth: 17, halign: 'center' },
+                8: { cellWidth: 15, halign: 'center' },
+                9: { cellWidth: 17, halign: 'center' },
+                10: { cellWidth: 'auto' },
+            },
+            alternateRowStyles: { fillColor: [250, 246, 240] },
+            didDrawPage: (data) => {
+                const pageCount = (doc.internal as any).getNumberOfPages();
+                const pageNum = data.pageNumber;
+                doc.setFontSize(7);
+                doc.setTextColor(150);
+                doc.text(`Page ${pageNum} of ${pageCount}`, pageW - 14, doc.internal.pageSize.getHeight() - 6, { align: 'right' });
+            },
+        });
+
+        const fileName = `diary_by_davda-${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()}.pdf`;
+        doc.save(fileName);
     };
 
     // Apply both text search and date filter, then sort by next_date ascending (upcoming first)
@@ -335,6 +427,18 @@ const Dashboard = () => {
                                 </div>
                             )}
                         </div>
+
+                        {/* Export PDF */}
+                        <Button
+                            variant="outline-secondary"
+                            className="search-icon-btn d-flex align-items-center gap-1"
+                            onClick={handleExportPDF}
+                            title="Export filtered cases as PDF"
+                            style={{ whiteSpace: 'nowrap', paddingLeft: 10, paddingRight: 10 }}
+                        >
+                            <FiDownload size={15} />
+                            <span className="d-none d-sm-inline" style={{ fontSize: '0.85rem' }}>Export</span>
+                        </Button>
 
                         {/* Add Case */}
                         <Button
@@ -544,6 +648,30 @@ const Dashboard = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            {/* Toast */}
+            {showToast && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        bottom: 24,
+                        right: 24,
+                        zIndex: 9999,
+                        background: '#1a1a1a',
+                        color: '#fff',
+                        padding: '10px 18px',
+                        borderRadius: 8,
+                        boxShadow: '0 4px 16px rgba(0,0,0,0.35)',
+                        fontSize: '0.875rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        animation: 'fadeInUp 0.2s ease',
+                    }}
+                >
+                    <FiDownload size={15} style={{ opacity: 0.7 }} />
+                    {toastMsg}
+                </div>
+            )}
         </>
     );
 };
