@@ -8,8 +8,8 @@ const connectDB = async () => {
         const conn = await mongoose.connect(uri, { dbName });
         console.log(`MongoDB Connected: ${conn.connection.host} → DB: ${conn.connection.name}`);
     } catch (error: any) {
-        console.error(`Error: ${error.message}`);
-        process.exit(1);
+        console.error(`Error connecting to MongoDB: ${error.message}`);
+        console.warn('Server will continue running. Health endpoint will be available.');
     }
 };
 
