@@ -9,13 +9,12 @@ import connectDB from './config/db';
 // Load env vars
 dotenv.config();
 
-// Connect to database
-connectDB();
-
+// Initialize app
 const app = express();
 
 import authRoutes from './routes/authRoutes';
 import caseRoutes from './routes/caseRoutes';
+import healthRoutes from './routes/healthRoutes';
 
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger';
@@ -44,12 +43,21 @@ app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
+// Health check endpoint (public, no auth required, no DB access)
+app.use('/health', healthRoutes);
+
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/auth', authRoutes);
 app.use('/api/cases', caseRoutes);
 
 const PORT = process.env.PORT || 3000;
 
+// Start server first, then connect to database asynchronously
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    
+    // Connect to database without blocking server startup
+    connectDB().catch((error) => {
+        console.error('Failed to connect to database:', error);
+    });
 });
